@@ -1,5 +1,5 @@
 
-import { CreateButton, DeleteButton, EditButton } from "./components";
+import { CreateButton} from "./components";
 import { ViewAllComputers } from "./view-all-computers";
 
 export default function Computers() {

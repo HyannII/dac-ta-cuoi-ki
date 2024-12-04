@@ -1,4 +1,4 @@
-import { CreateButton, DeleteButton, EditButton } from "./components";
+import { CreateButton} from "./components";
 import { ViewAllAccounts } from "./view-all-accounts";
 
 export default function Accounts() {
