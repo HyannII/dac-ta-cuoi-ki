@@ -20,7 +20,7 @@ model Account {
 
 model Computer {
   id           String         @id
-  name         String
+  name         String         @unique
   status       String         @default("Offline")
   location     String?
   specs        String?
@@ -33,6 +33,7 @@ model Customer {
   id              String         @id
   accountId       String         @unique
   fullName        String
+  citizenId       String         @unique
   phoneNumber     String?
   email           String?
   membershipLevel String         @default("Regular")

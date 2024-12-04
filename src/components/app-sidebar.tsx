@@ -30,7 +30,7 @@ const items = [
   },
   {
     title: "Invoices",
-    url: "#",
+    url: "/invoices",
     icon: BookUser,
   },
   {
@@ -45,7 +45,7 @@ const items = [
   },
   {
     title: "UsageHistory",
-    url: "#",
+    url: "/usage-history",
     icon: FileClock,
   },
 ];

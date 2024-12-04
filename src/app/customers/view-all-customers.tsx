@@ -26,6 +26,7 @@ export async function ViewAllCustomers() {
         <TableRow>
           <TableHead>Tên tài khoản</TableHead>
           <TableHead>Tên khách hàng</TableHead>
+          <TableHead>Mã CCCD</TableHead>
           <TableHead>Số điện thoại</TableHead>
           <TableHead>Email</TableHead>
           <TableHead>Mức thành viên</TableHead>
@@ -38,6 +39,7 @@ export async function ViewAllCustomers() {
           <TableRow key={customer.id}>
             <TableCell>{customer.Account?.username || "N/A"}</TableCell>
             <TableCell>{customer.fullName}</TableCell>
+            <TableCell>{customer.citizenId}</TableCell>
             <TableCell>{customer.phoneNumber}</TableCell>
             <TableCell>{customer.email}</TableCell>
             <TableCell>{customer.membershipLevel}</TableCell>

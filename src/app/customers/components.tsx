@@ -40,6 +40,13 @@ export function CreateButton(): JSX.Element {
             placeholder="Tên khách hàng"
             required
           />
+          <Label>Mã căn cước công dân</Label>
+          <Input
+            type="text"
+            name="citizenId"
+            placeholder="Mã căn cước công dân"
+            required
+          />
           <Label>Tên tài khoản</Label>
           <Input
             type="text"
@@ -85,6 +92,7 @@ export function CreateButton(): JSX.Element {
 export function EditButton({ id }: { id: string }): JSX.Element {
   const [customer, setCustomer] = useState<{
     fullName: string;
+    citizenId: string;
     account: { username: string };
     phoneNumber: string;
     email: string;
@@ -117,6 +125,13 @@ export function EditButton({ id }: { id: string }): JSX.Element {
             type="text"
             name="fullName"
             defaultValue={customer?.fullName}
+            required
+          />
+          <Label>Mã căn cước công dân</Label>
+          <Input
+            type="text"
+            name="citizenId"
+            defaultValue={customer?.citizenId}
             required
           />
           <Label>Tên tài khoản</Label>

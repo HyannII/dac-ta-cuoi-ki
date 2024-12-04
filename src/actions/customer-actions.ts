@@ -21,6 +21,7 @@ export async function getCustomerById(id: string) {
 
     return {
       fullName: customer.fullName,
+      citizenId: customer.citizenId,
       account: { username: customer.Account?.username || "" },
       phoneNumber: customer.phoneNumber || "",
       email: customer.email || "",
@@ -44,6 +45,7 @@ export async function createCustomer(formData: FormData) {
         })
         .then(({ id }) => id),
       fullName: formData.get("fullName") as string,
+      citizenId: formData.get("citizenId") as string,
       phoneNumber: formData.get("phoneNumber") as string,
       membershipLevel: formData.get("membershipLevel") as string,
       balance: Number(formData.get("balance")),
@@ -64,6 +66,7 @@ export async function editCustomer(formData: FormData, id: string) {
         })
         .then(({ id }) => id),
       fullName: formData.get("fullName") as string,
+      citizenId: formData.get("citizenId") as string,
       phoneNumber: formData.get("phoneNumber") as string,
       membershipLevel: formData.get("membershipLevel") as string,
       balance: Number(formData.get("balance")),
