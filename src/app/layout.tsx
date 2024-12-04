@@ -1,6 +1,16 @@
 import type { Metadata } from "next";
 import localFont from "next/font/local";
 import "./globals.css";
+import { ThemeProvider } from "@/components/theme-provider";
+import {
+  SidebarInset,
+  SidebarProvider,
+  SidebarTrigger,
+} from "@/components/ui/sidebar";
+import { AppSidebar } from "@/components/app-sidebar";
+import { ModeToggle } from "@/components/ui/mode-toggle";
+import { Separator } from "@/components/ui/separator";
+import { Breadcrumb, BreadcrumbItem, BreadcrumbLink, BreadcrumbList, BreadcrumbPage, BreadcrumbSeparator } from "@/components/ui/breadcrumb";
 
 const geistSans = localFont({
   src: "./fonts/GeistVF.woff",
@@ -24,12 +34,38 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en">
-      <body
-        className={`${geistSans.variable} ${geistMono.variable} antialiased`}
+    <>
+      <html
+        lang="en"
+        suppressHydrationWarning
       >
-        {children}
-      </body>
-    </html>
+        <head />
+        <body>
+          <ThemeProvider
+            attribute="class"
+            defaultTheme="system"
+            enableSystem
+            disableTransitionOnChange
+          >
+            <SidebarProvider>
+              <AppSidebar></AppSidebar>
+              <SidebarInset>
+                <header className="flex h-16 shrink-0 items-center gap-2">
+                  <div className="flex items-center w-full gap-2 px-4 justify-between">
+                    <div className="flex items-center">
+                      <SidebarTrigger className="-ml-1" />
+                    </div>
+                    <div className="flex items-center">
+                      <ModeToggle />
+                    </div>
+                  </div>
+                </header>
+                {children}
+              </SidebarInset>
+            </SidebarProvider>
+          </ThemeProvider>
+        </body>
+      </html>
+    </>
   );
 }

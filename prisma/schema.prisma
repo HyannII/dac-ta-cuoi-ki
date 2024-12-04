@@ -1,0 +1,107 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Account {
+  id        String    @id
+  username  String    @unique
+  password  String
+  role      String
+  createdAt DateTime  @default(now())
+  updatedAt DateTime
+  Customer  Customer?
+  Staff     Staff?
+}
+
+model Computer {
+  id           String         @id
+  name         String
+  status       String         @default("Offline")
+  location     String?
+  specs        String?
+  createdAt    DateTime       @default(now())
+  updatedAt    DateTime
+  UsageHistory UsageHistory[]
+}
+
+model Customer {
+  id              String         @id
+  accountId       String         @unique
+  fullName        String
+  phoneNumber     String?
+  email           String?
+  membershipLevel String         @default("Regular")
+  balance         Float          @default(0.0)
+  createdAt       DateTime       @default(now())
+  updatedAt       DateTime
+  Account         Account        @relation(fields: [accountId], references: [id])
+  Invoice         Invoice[]
+  UsageHistory    UsageHistory[]
+}
+
+model Invoice {
+  id             String           @id
+  customerId     String
+  invoiceDate    DateTime         @default(now())
+  totalAmount    Float
+  status         String           @default("Unpaid")
+  createdAt      DateTime         @default(now())
+  updatedAt      DateTime
+  Customer       Customer         @relation(fields: [customerId], references: [id])
+  InvoiceService InvoiceService[]
+  UsageHistory   UsageHistory[]
+}
+
+model InvoiceService {
+  id         String   @id
+  invoiceId  String
+  serviceId  String
+  quantity   Int      @default(1)
+  totalPrice Float
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime
+  Invoice    Invoice  @relation(fields: [invoiceId], references: [id])
+  Service    Service  @relation(fields: [serviceId], references: [id])
+}
+
+model Service {
+  id             String           @id
+  name           String
+  price          Float
+  createdAt      DateTime         @default(now())
+  updatedAt      DateTime
+  InvoiceService InvoiceService[]
+}
+
+model Staff {
+  id          String   @id
+  accountId   String   @unique
+  fullName    String
+  phoneNumber String?
+  email       String?  @unique
+  role        String
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime
+  Account     Account  @relation(fields: [accountId], references: [id])
+}
+
+model UsageHistory {
+  id         String    @id
+  customerId String
+  computerId String
+  startTime  DateTime
+  endTime    DateTime?
+  totalHours Float?
+  totalCost  Float?
+  invoiceId  String?
+  createdAt  DateTime  @default(now())
+  updatedAt  DateTime
+  Computer   Computer  @relation(fields: [computerId], references: [id])
+  Customer   Customer  @relation(fields: [customerId], references: [id])
+  Invoice    Invoice?  @relation(fields: [invoiceId], references: [id])
+}
