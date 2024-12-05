@@ -1,0 +1,74 @@
+[
+  {
+    "id": "cm4bk624h0000356tuk9553qj",
+    "invoiceId": "cm4bk620d00002gfb9i703ap0",
+    "serviceId": "srv4",
+    "quantity": 1,
+    "totalPrice": 5000,
+    "createdAt": "2024-12-05T16:55:42.538Z",
+    "updatedAt": "2024-12-05T16:55:42.535Z"
+  },
+  {
+    "id": "cm4bk624h0001356tnid9n42q",
+    "invoiceId": "cm4bk620d00002gfb9i703ap0",
+    "serviceId": "srv3",
+    "quantity": 1,
+    "totalPrice": 20000,
+    "createdAt": "2024-12-05T16:55:42.538Z",
+    "updatedAt": "2024-12-05T16:55:42.535Z"
+  },
+  {
+    "id": "cm4bl3hd10000356tyrkqrtet",
+    "invoiceId": "cm4bl3hak00000wfb0z9hc7x7",
+    "serviceId": "srv3",
+    "quantity": 1,
+    "totalPrice": 20000,
+    "createdAt": "2024-12-05T17:21:41.869Z",
+    "updatedAt": "2024-12-05T17:21:41.867Z"
+  },
+  {
+    "id": "cm4bl3hd10001356tl14d5i6f",
+    "invoiceId": "cm4bl3hak00000wfb0z9hc7x7",
+    "serviceId": "srv2",
+    "quantity": 1,
+    "totalPrice": 30000,
+    "createdAt": "2024-12-05T17:21:41.869Z",
+    "updatedAt": "2024-12-05T17:21:41.867Z"
+  },
+  {
+    "id": "cm4bl5vin0000356t5etty9z7",
+    "invoiceId": "cm4bl5vg700000wfb69azbkj7",
+    "serviceId": "srv3",
+    "quantity": 1,
+    "totalPrice": 20000,
+    "createdAt": "2024-12-05T17:23:33.528Z",
+    "updatedAt": "2024-12-05T17:23:33.527Z"
+  },
+  {
+    "id": "cm4bmb5gr0000356tvpj1o1cp",
+    "invoiceId": "cm4bmb5e7000038fb8vhmab2k",
+    "serviceId": "srv5",
+    "quantity": 2,
+    "totalPrice": 20000,
+    "createdAt": "2024-12-05T17:55:39.321Z",
+    "updatedAt": "2024-12-05T17:55:39.320Z"
+  },
+  {
+    "id": "cm4bmb5gr0001356ti9ela0v9",
+    "invoiceId": "cm4bmb5e7000038fb8vhmab2k",
+    "serviceId": "srv4",
+    "quantity": 2,
+    "totalPrice": 10000,
+    "createdAt": "2024-12-05T17:55:39.321Z",
+    "updatedAt": "2024-12-05T17:55:39.320Z"
+  },
+  {
+    "id": "cm4bmb5gr0002356t68n35ggc",
+    "invoiceId": "cm4bmb5e7000038fb8vhmab2k",
+    "serviceId": "srv3",
+    "quantity": 3,
+    "totalPrice": 60000,
+    "createdAt": "2024-12-05T17:55:39.321Z",
+    "updatedAt": "2024-12-05T17:55:39.320Z"
+  }
+]

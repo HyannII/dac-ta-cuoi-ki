@@ -1,0 +1,65 @@
+[
+  {
+    "id": "cm4a8otq600003gfb5j1rdtkw",
+    "customerId": "cust1",
+    "invoiceDate": "2024-12-04T18:46:36.418Z",
+    "totalAmount": 500000,
+    "status": "Hoàn thành",
+    "createdAt": "2024-12-04T18:46:36.422Z",
+    "updatedAt": "2024-12-04T18:46:36.418Z"
+  },
+  {
+    "id": "cm4bk620d00002gfb9i703ap0",
+    "customerId": "cust2",
+    "invoiceDate": "2024-12-05T16:55:42.258Z",
+    "totalAmount": 25000,
+    "status": "Unpaid",
+    "createdAt": "2024-12-05T16:55:42.258Z",
+    "updatedAt": "2024-12-05T16:55:42.253Z"
+  },
+  {
+    "id": "cm4bl3hak00000wfb0z9hc7x7",
+    "customerId": "cm4b2a8zl0001cwfb585tf9ru",
+    "invoiceDate": "2024-12-05T17:21:41.710Z",
+    "totalAmount": 50000,
+    "status": "Unpaid",
+    "createdAt": "2024-12-05T17:21:41.710Z",
+    "updatedAt": "2024-12-05T17:21:41.708Z"
+  },
+  {
+    "id": "cm4bl5vg700000wfb69azbkj7",
+    "customerId": "cust2",
+    "invoiceDate": "2024-12-05T17:23:33.369Z",
+    "totalAmount": 20000,
+    "status": "Unpaid",
+    "createdAt": "2024-12-05T17:23:33.369Z",
+    "updatedAt": "2024-12-05T17:23:33.368Z"
+  },
+  {
+    "id": "cm4bl9t9j00000wfb93xt1cuq",
+    "customerId": "cust2",
+    "invoiceDate": "2024-12-05T17:26:37.161Z",
+    "totalAmount": 20000,
+    "status": "Unpaid",
+    "createdAt": "2024-12-05T17:26:37.161Z",
+    "updatedAt": "2024-12-05T17:26:37.159Z"
+  },
+  {
+    "id": "cm4bmb5e7000038fb8vhmab2k",
+    "customerId": "cm4b2a8zl0001cwfb585tf9ru",
+    "invoiceDate": "2024-12-05T17:55:39.153Z",
+    "totalAmount": 92107.6125,
+    "status": "Unpaid",
+    "createdAt": "2024-12-05T17:55:39.153Z",
+    "updatedAt": "2024-12-05T17:55:39.151Z"
+  },
+  {
+    "id": "inv2",
+    "customerId": "cust2",
+    "invoiceDate": "2024-01-11T10:00:00.000Z",
+    "totalAmount": 12.5,
+    "status": "Paid",
+    "createdAt": "2024-12-04T17:55:54.692Z",
+    "updatedAt": "2024-12-04T17:55:54.684Z"
+  }
+]

@@ -1,0 +1,98 @@
+[
+  {
+    "id": "acc1",
+    "username": "user1",
+    "password": "hashed_password1",
+    "role": "Customer",
+    "createdAt": "2024-12-04T17:55:54.502Z",
+    "updatedAt": "2024-12-04T17:55:54.307Z"
+  },
+  {
+    "id": "acc2",
+    "username": "user2",
+    "password": "hashed_password2",
+    "role": "Customer",
+    "createdAt": "2024-12-04T17:55:54.552Z",
+    "updatedAt": "2024-12-04T17:55:54.307Z"
+  },
+  {
+    "id": "acc3",
+    "username": "user3",
+    "password": "hashed_password3",
+    "role": "Customer",
+    "createdAt": "2024-12-04T17:55:54.558Z",
+    "updatedAt": "2024-12-04T17:55:54.307Z"
+  },
+  {
+    "id": "acc4",
+    "username": "staff1",
+    "password": "hashed_password4",
+    "role": "Staff",
+    "createdAt": "2024-12-04T17:55:54.560Z",
+    "updatedAt": "2024-12-04T17:55:54.307Z"
+  },
+  {
+    "id": "acc5",
+    "username": "staff2",
+    "password": "hashed_password5",
+    "role": "Staff",
+    "createdAt": "2024-12-04T17:55:54.563Z",
+    "updatedAt": "2024-12-04T17:55:54.307Z"
+  },
+  {
+    "id": "cm4azjss900003gfb2bv360o5",
+    "username": "nguyena",
+    "password": "123456",
+    "role": "Customer",
+    "createdAt": "2024-12-05T07:18:31.550Z",
+    "updatedAt": "2024-12-05T07:18:31.546Z"
+  },
+  {
+    "id": "cm4azmv2r00003gfbde6k21nu",
+    "username": "nguyenvanb",
+    "password": "123456",
+    "role": "Customer",
+    "createdAt": "2024-12-05T07:20:54.485Z",
+    "updatedAt": "2024-12-05T07:20:54.484Z"
+  },
+  {
+    "id": "cm4b2a8zk0000cwfb1z825l6m",
+    "username": "cisthebest",
+    "password": "hompage",
+    "role": "Customer",
+    "createdAt": "2024-12-05T08:35:04.839Z",
+    "updatedAt": "2024-12-05T08:35:04.833Z"
+  },
+  {
+    "id": "cm4b66oef0001cwfb0h3oc84k",
+    "username": "charliechaplin",
+    "password": "charliechaplin",
+    "role": "Customer",
+    "createdAt": "2024-12-05T10:24:16.653Z",
+    "updatedAt": "2024-12-05T10:24:16.647Z"
+  },
+  {
+    "id": "cm4b6ch0e0000cwfb4nygbin3",
+    "username": "ako",
+    "password": "ako",
+    "role": "Customer",
+    "createdAt": "2024-12-05T10:28:47.011Z",
+    "updatedAt": "2024-12-05T10:28:47.006Z"
+  },
+  {
+    "id": "cm4b6ftl30000cwfbfadoe5xe",
+    "username": "nam",
+    "password": "nam",
+    "role": "Customer",
+    "createdAt": "2024-12-05T10:31:23.275Z",
+    "updatedAt": "2024-12-05T10:31:23.272Z"
+  },
+  {
+    "id": "cm4bair0u0000cwfb0w1fboew",
+    "username": "staff3",
+    "password": "staff3",
+    "role": "Staff",
+    "createdAt": "2024-12-05T12:25:38.386Z",
+    "updatedAt": "2024-12-05T12:25:38.382Z"
+  }
+]

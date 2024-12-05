@@ -1,0 +1,32 @@
+[
+  {
+    "id": "cm4bakx2y0000cwfb2m3h4f74",
+    "accountId": "cm4bair0u0000cwfb0w1fboew",
+    "fullName": "Michael",
+    "phoneNumber": "0193938181",
+    "email": "ngz@gmail.com",
+    "role": "Tiếp tân",
+    "createdAt": "2024-12-05T12:27:19.552Z",
+    "updatedAt": "2024-12-05T12:27:57.466Z"
+  },
+  {
+    "id": "staff1",
+    "accountId": "acc4",
+    "fullName": "Emily Taylor",
+    "phoneNumber": "555666777",
+    "email": "emily@example.com",
+    "role": "Manager",
+    "createdAt": "2024-12-04T17:55:54.604Z",
+    "updatedAt": "2024-12-04T17:55:54.602Z"
+  },
+  {
+    "id": "staff2",
+    "accountId": "acc5",
+    "fullName": "Michael Scott",
+    "phoneNumber": "777888999",
+    "email": "michael@example.com",
+    "role": "Operator",
+    "createdAt": "2024-12-04T17:55:54.610Z",
+    "updatedAt": "2024-12-04T17:55:54.602Z"
+  }
+]

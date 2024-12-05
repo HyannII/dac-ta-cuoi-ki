@@ -13,40 +13,29 @@ import {
   SidebarProvider,
   SidebarTrigger,
 } from "@/components/ui/sidebar"
+import { readAllTables } from "../../../prisma/seedCreator"
 
-export default function Page() {
-  return (
-    <SidebarProvider>
-      <AppSidebar />
-      <SidebarInset>
-        <header className="flex h-16 shrink-0 items-center gap-2">
-          <div className="flex items-center gap-2 px-4">
-            <SidebarTrigger className="-ml-1" />
-            <Separator orientation="vertical" className="mr-2 h-4" />
-            <Breadcrumb>
-              <BreadcrumbList>
-                <BreadcrumbItem className="hidden md:block">
-                  <BreadcrumbLink href="#">
-                    Building Your Application
-                  </BreadcrumbLink>
-                </BreadcrumbItem>
-                <BreadcrumbSeparator className="hidden md:block" />
-                <BreadcrumbItem>
-                  <BreadcrumbPage>Data Fetching</BreadcrumbPage>
-                </BreadcrumbItem>
-              </BreadcrumbList>
-            </Breadcrumb>
-          </div>
-        </header>
-        <div className="flex flex-1 flex-col gap-4 p-4 pt-0">
-          <div className="grid auto-rows-min gap-4 md:grid-cols-3">
-            <div className="aspect-video rounded-xl bg-muted/50" />
-            <div className="aspect-video rounded-xl bg-muted/50" />
-            <div className="aspect-video rounded-xl bg-muted/50" />
-          </div>
-          <div className="min-h-[100vh] flex-1 rounded-xl bg-muted/50 md:min-h-min" />
-        </div>
-      </SidebarInset>
-    </SidebarProvider>
-  )
-}
+const main = async () => {
+  // Tạo seed cho tất cả các bảng
+  await readAllTables({
+    allSeeds: true, // Tạo tất cả seed
+    seedFile: true, // Tạo file seed.ts
+    logTables: true, // Log ra danh sách các bảng
+    arrFilters: [
+      // (Tùy chọn) Thêm các bộ lọc để loại bỏ/điều chỉnh dữ liệu
+      {
+        keyToFilter: "password",
+        replaceTo: "encrypted-password",
+        inTable: "User",
+      },
+      { keyToFilter: "deletedAt" },
+    ],
+    onlyTables: [], // (Tùy chọn) Nếu để trống, sẽ đọc tất cả các bảng
+    folderName: "seeds", // Tên thư mục chứa các file seed
+  });
+};
+
+main()
+  .then(() => console.log("Seed creation completed."))
+  .catch((err) => console.error("Error during seed creation:", err));
+

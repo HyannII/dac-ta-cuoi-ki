@@ -1,0 +1,47 @@
+[
+  {
+    "id": "comp1",
+    "name": "PC-001",
+    "status": "Online",
+    "location": "Zone A",
+    "specs": "i5, 16GB RAM, GTX 1060",
+    "createdAt": "2024-12-04T17:55:54.614Z",
+    "updatedAt": "2024-12-04T17:55:54.612Z"
+  },
+  {
+    "id": "comp2",
+    "name": "PC-002",
+    "status": "Offline",
+    "location": "Zone B",
+    "specs": "i7, 32GB RAM, RTX 2060",
+    "createdAt": "2024-12-04T17:55:54.620Z",
+    "updatedAt": "2024-12-04T17:55:54.612Z"
+  },
+  {
+    "id": "comp3",
+    "name": "PC-003",
+    "status": "Online",
+    "location": "Zone C",
+    "specs": "Ryzen 5, 16GB RAM, GTX 1660",
+    "createdAt": "2024-12-04T17:55:54.623Z",
+    "updatedAt": "2024-12-04T17:55:54.612Z"
+  },
+  {
+    "id": "comp4",
+    "name": "PC-004",
+    "status": "Offline",
+    "location": "Zone D",
+    "specs": "i9, 64GB RAM, RTX 3080",
+    "createdAt": "2024-12-04T17:55:54.636Z",
+    "updatedAt": "2024-12-04T17:55:54.612Z"
+  },
+  {
+    "id": "comp5",
+    "name": "PC-005",
+    "status": "Online",
+    "location": "Zone E",
+    "specs": "M1, 8GB RAM, Integrated",
+    "createdAt": "2024-12-04T17:55:54.638Z",
+    "updatedAt": "2024-12-04T17:55:54.612Z"
+  }
+]

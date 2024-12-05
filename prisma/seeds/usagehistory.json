@@ -1,0 +1,167 @@
+[
+  {
+    "id": "cm4ab9qtl0000jwfbb2v1gfiz",
+    "customerId": "cust2",
+    "computerId": "comp3",
+    "startTime": "2024-12-04T19:58:51.660Z",
+    "endTime": "2024-12-04T19:59:01.048Z",
+    "totalHours": 0.002607777777777778,
+    "totalCost": 13.03888888888889,
+    "invoiceId": "cm4bk620d00002gfb9i703ap0",
+    "createdAt": "2024-12-04T19:58:51.662Z",
+    "updatedAt": "2024-12-04T19:59:01.051Z"
+  },
+  {
+    "id": "cm4b2iy880000cwfb4vuv7o9d",
+    "customerId": "cm4b2a8zl0001cwfb585tf9ru",
+    "computerId": "comp5",
+    "startTime": "2024-12-05T08:41:50.792Z",
+    "endTime": "2024-12-05T08:42:02.219Z",
+    "totalHours": 0.003174166666666667,
+    "totalCost": 15.87083333333333,
+    "invoiceId": "cm4bmb5e7000038fb8vhmab2k",
+    "createdAt": "2024-12-05T08:41:50.794Z",
+    "updatedAt": "2024-12-05T08:42:02.221Z"
+  },
+  {
+    "id": "cm4b2x4wv0000cwfbht4a7n87",
+    "customerId": "cm4b2a8zl0001cwfb585tf9ru",
+    "computerId": "comp2",
+    "startTime": "2024-12-05T08:52:52.639Z",
+    "endTime": "2024-12-05T09:17:58.693Z",
+    "totalHours": 0.4183483333333333,
+    "totalCost": 2091.741666666667,
+    "invoiceId": "cm4bmb5e7000038fb8vhmab2k",
+    "createdAt": "2024-12-05T08:52:52.640Z",
+    "updatedAt": "2024-12-05T09:17:58.700Z"
+  },
+  {
+    "id": "cm4b3ijv00000cwfba3n78c81",
+    "customerId": "cm4azmv2u00013gfbg6xoaleo",
+    "computerId": "comp1",
+    "startTime": "2024-12-05T09:09:31.789Z",
+    "endTime": "2024-12-05T09:18:11.270Z",
+    "totalHours": 0.1443002777777778,
+    "totalCost": 721.501388888889,
+    "createdAt": "2024-12-05T09:09:31.790Z",
+    "updatedAt": "2024-12-05T09:18:11.273Z"
+  },
+  {
+    "id": "cm4b4fxzf0000cwfb8wbh2qac",
+    "customerId": "cm4azmv2u00013gfbg6xoaleo",
+    "computerId": "comp4",
+    "startTime": "2024-12-05T09:35:29.740Z",
+    "endTime": "2024-12-05T09:46:03.432Z",
+    "totalHours": 0.1760255555555555,
+    "totalCost": 880.1277777777777,
+    "createdAt": "2024-12-05T09:35:29.741Z",
+    "updatedAt": "2024-12-05T09:46:03.437Z"
+  },
+  {
+    "id": "cm4b4t74z0000cwfb8u171bt4",
+    "customerId": "cust3",
+    "computerId": "comp5",
+    "startTime": "2024-12-05T09:45:48.131Z",
+    "endTime": "2024-12-05T09:45:58.420Z",
+    "totalHours": 0.002858055555555556,
+    "totalCost": 14.29027777777778,
+    "createdAt": "2024-12-05T09:45:48.133Z",
+    "updatedAt": "2024-12-05T09:45:58.424Z"
+  },
+  {
+    "id": "cm4b5zbyl0000cwfbfep6h6tm",
+    "customerId": "cust2",
+    "computerId": "comp4",
+    "startTime": "2024-12-05T10:18:33.934Z",
+    "endTime": "2024-12-05T10:22:21.392Z",
+    "totalHours": 0.06318277777777778,
+    "totalCost": 315.9138888888889,
+    "invoiceId": "cm4bl5vg700000wfb69azbkj7",
+    "createdAt": "2024-12-05T10:18:33.936Z",
+    "updatedAt": "2024-12-05T10:22:21.399Z"
+  },
+  {
+    "id": "cm4b6imj70000cwfbhv597ksm",
+    "customerId": "cm4b6ftl40001cwfb7jhkdljo",
+    "computerId": "comp3",
+    "startTime": "2024-12-05T10:33:34.099Z",
+    "createdAt": "2024-12-05T10:33:34.101Z",
+    "updatedAt": "2024-12-05T10:33:34.099Z"
+  },
+  {
+    "id": "cm4b6w2la0000cwfbhlcs52rg",
+    "customerId": "cm4b66oef0002cwfb1ddy9bes",
+    "computerId": "comp2",
+    "startTime": "2024-12-05T10:44:01.438Z",
+    "createdAt": "2024-12-05T10:44:01.441Z",
+    "updatedAt": "2024-12-05T10:44:01.438Z"
+  },
+  {
+    "id": "cm4b795c50000cwfb585z22s3",
+    "customerId": "cust3",
+    "computerId": "comp2",
+    "startTime": "2024-12-05T10:54:11.525Z",
+    "createdAt": "2024-12-05T10:54:11.528Z",
+    "updatedAt": "2024-12-05T10:54:11.525Z"
+  },
+  {
+    "id": "cm4b7akkp0000cwfb8fwe42nx",
+    "customerId": "cust1",
+    "computerId": "comp2",
+    "startTime": "2024-12-05T10:55:17.930Z",
+    "createdAt": "2024-12-05T10:55:17.932Z",
+    "updatedAt": "2024-12-05T10:55:17.930Z"
+  },
+  {
+    "id": "cm4b7h9450000cwfba6bmdda1",
+    "customerId": "cust2",
+    "computerId": "comp3",
+    "startTime": "2024-12-05T11:00:29.669Z",
+    "createdAt": "2024-12-05T11:00:29.671Z",
+    "updatedAt": "2024-12-05T11:00:29.669Z"
+  },
+  {
+    "id": "usage2",
+    "customerId": "cust2",
+    "computerId": "comp2",
+    "startTime": "2024-01-11T10:00:00.000Z",
+    "endTime": "2024-01-11T12:30:00.000Z",
+    "totalHours": 2.5,
+    "totalCost": 12.5,
+    "createdAt": "2024-12-04T17:55:54.674Z",
+    "updatedAt": "2024-12-04T17:55:54.655Z"
+  },
+  {
+    "id": "usage3",
+    "customerId": "cust3",
+    "computerId": "comp3",
+    "startTime": "2024-01-12T14:00:00.000Z",
+    "endTime": "2024-01-12T16:00:00.000Z",
+    "totalHours": 2,
+    "totalCost": 10,
+    "createdAt": "2024-12-04T17:55:54.676Z",
+    "updatedAt": "2024-12-04T17:55:54.655Z"
+  },
+  {
+    "id": "usage4",
+    "customerId": "cust4",
+    "computerId": "comp4",
+    "startTime": "2024-01-13T09:00:00.000Z",
+    "endTime": "2024-01-13T10:30:00.000Z",
+    "totalHours": 1.5,
+    "totalCost": 7.5,
+    "createdAt": "2024-12-04T17:55:54.678Z",
+    "updatedAt": "2024-12-04T17:55:54.655Z"
+  },
+  {
+    "id": "usage5",
+    "customerId": "cust5",
+    "computerId": "comp5",
+    "startTime": "2024-01-14T11:00:00.000Z",
+    "endTime": "2024-01-14T13:00:00.000Z",
+    "totalHours": 2,
+    "totalCost": 10,
+    "createdAt": "2024-12-04T17:55:54.681Z",
+    "updatedAt": "2024-12-04T17:55:54.655Z"
+  }
+]
