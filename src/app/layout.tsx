@@ -46,7 +46,7 @@ export default function RootLayout({
                     </div>
                   </div>
                 </header>
-                {children}
+                <div className="w-full h-full px-4">{children}</div>
               </SidebarInset>
             </SidebarProvider>
           </ThemeProvider>

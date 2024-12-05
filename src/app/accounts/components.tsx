@@ -32,29 +32,43 @@ export function CreateButton(): JSX.Element {
         <DialogHeader>
           <DialogTitle>Tạo tài khoản</DialogTitle>
         </DialogHeader>
-        <form action={createAccount}>
-          <Label>Tên tài khoản</Label>
-          <Input
-            type="text"
-            name="username"
-            placeholder="Tên tài khoản"
-            required
-          />
-          <Label>Mật khẩu</Label>
-          <Input
-            type="password"
-            name="password"
-            placeholder="Mật khẩu"
-            required
-          />
-          <Label>Vai trò</Label>
-          <Input
-            type="text"
-            name="role"
-            placeholder="Vai trò"
-            required
-          />
-          <Button type="submit">Tạo</Button>
+        <form
+          action={createAccount}
+          className="space-y-4"
+        >
+          <div className="flex flex-col">
+            <Label>Tên tài khoản</Label>
+            <Input
+              type="text"
+              name="username"
+              placeholder="Tên tài khoản"
+              required
+            />
+          </div>
+          <div className="flex flex-col">
+            <Label>Mật khẩu</Label>
+            <Input
+              type="password"
+              name="password"
+              placeholder="Mật khẩu"
+              required
+            />
+          </div>
+          <div className="flex flex-col">
+            <Label>Vai trò</Label>
+            <Input
+              type="text"
+              name="role"
+              placeholder="Vai trò"
+              required
+            />
+          </div>
+          <Button
+            type="submit"
+            className="w-full"
+          >
+            Tạo
+          </Button>
         </form>
       </DialogContent>
     </Dialog>
@@ -84,27 +98,33 @@ export function EditButton({ id }: { id: string }): JSX.Element {
         <form
           action={async (formData: FormData) => await editAccount(formData, id)}
         >
-          <Label>Tên tài khoản</Label>
-          <Input
-            type="text"
-            name="username"
-            defaultValue={account?.username}
-            required
-          />
-          <Label>Mật khẩu</Label>
-          <Input
-            type="password"
-            name="password"
-            defaultValue={account?.password}
-            required
-          />
-          <Label>Vai trò</Label>
-          <Input
-            type="text"
-            name="role"
-            defaultValue={account?.role}
-            required
-          />
+          <div className="flex flex-col">
+            <Label>Tên tài khoản</Label>
+            <Input
+              type="text"
+              name="username"
+              defaultValue={account?.username}
+              required
+            />
+          </div>
+          <div className="flex flex-col">
+            <Label>Mật khẩu</Label>
+            <Input
+              type="password"
+              name="password"
+              defaultValue={account?.password}
+              required
+            />
+          </div>
+          <div className="flex flex-col">
+            <Label>Vai trò</Label>
+            <Input
+              type="text"
+              name="role"
+              defaultValue={account?.role}
+              required
+            />
+          </div>
           <Button type="submit">Sửa</Button>
         </form>
       </DialogContent>

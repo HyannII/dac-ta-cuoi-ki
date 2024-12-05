@@ -1,3 +1,5 @@
+import cuid from "cuid";
+
 const { PrismaClient } = require("@prisma/client");
 const prisma = new PrismaClient();
 
@@ -5,35 +7,35 @@ async function main() {
   // Accounts
   const accounts = [
     {
-      id: "acc1",
+      id: cuid(),
       username: "user1",
       password: "hashed_password1",
       role: "Customer",
       updatedAt: new Date(),
     },
     {
-      id: "acc2",
+      id: cuid(),
       username: "user2",
       password: "hashed_password2",
       role: "Customer",
       updatedAt: new Date(),
     },
     {
-      id: "acc3",
+      id: cuid(),
       username: "user3",
       password: "hashed_password3",
       role: "Customer",
       updatedAt: new Date(),
     },
     {
-      id: "acc4",
+      id: cuid(),
       username: "staff1",
       password: "hashed_password4",
       role: "Staff",
       updatedAt: new Date(),
     },
     {
-      id: "acc5",
+      id: cuid(),
       username: "staff2",
       password: "hashed_password5",
       role: "Staff",
@@ -48,7 +50,7 @@ async function main() {
   // Customers
   const customers = [
     {
-      id: "cust1",
+      id: cuid(),
       accountId: "acc1",
       fullName: "Alice Johnson",
       citizenId: "111111111",
@@ -57,7 +59,7 @@ async function main() {
       updatedAt: new Date(),
     },
     {
-      id: "cust2",
+      id: cuid(),
       accountId: "acc2",
       fullName: "Bob Smith",
       citizenId: "222222222",
@@ -66,7 +68,7 @@ async function main() {
       updatedAt: new Date(),
     },
     {
-      id: "cust3",
+      id: cuid(),
       accountId: "acc3",
       fullName: "Charlie Brown",
       citizenId: "333333333",
@@ -75,7 +77,7 @@ async function main() {
       updatedAt: new Date(),
     },
     {
-      id: "cust4",
+      id: cuid(),
       accountId: "acc4",
       fullName: "Dana White",
       citizenId: "444444444",
@@ -84,7 +86,7 @@ async function main() {
       updatedAt: new Date(),
     },
     {
-      id: "cust5",
+      id: cuid(),
       accountId: "acc5",
       fullName: "Eve Black",
       citizenId: "555555555",
@@ -101,7 +103,7 @@ async function main() {
   // Staff
   const staff = [
     {
-      id: "staff1",
+      id: cuid(),
       accountId: "acc4",
       fullName: "Emily Taylor",
       phoneNumber: "555666777",
@@ -110,7 +112,7 @@ async function main() {
       updatedAt: new Date(),
     },
     {
-      id: "staff2",
+      id: cuid(),
       accountId: "acc5",
       fullName: "Michael Scott",
       phoneNumber: "777888999",
@@ -127,7 +129,7 @@ async function main() {
   // Computers
   const computers = [
     {
-      id: "comp1",
+      id: cuid(),
       name: "PC-001",
       status: "Online",
       location: "Zone A",
@@ -135,7 +137,7 @@ async function main() {
       updatedAt: new Date(),
     },
     {
-      id: "comp2",
+      id: cuid(),
       name: "PC-002",
       status: "Offline",
       location: "Zone B",
@@ -143,7 +145,7 @@ async function main() {
       updatedAt: new Date(),
     },
     {
-      id: "comp3",
+      id: cuid(),
       name: "PC-003",
       status: "Online",
       location: "Zone C",
@@ -151,7 +153,7 @@ async function main() {
       updatedAt: new Date(),
     },
     {
-      id: "comp4",
+      id: cuid(),
       name: "PC-004",
       status: "Offline",
       location: "Zone D",
@@ -159,7 +161,7 @@ async function main() {
       updatedAt: new Date(),
     },
     {
-      id: "comp5",
+      id: cuid(),
       name: "PC-005",
       status: "Online",
       location: "Zone E",
@@ -174,11 +176,11 @@ async function main() {
 
   // Services
   const services = [
-    { id: "srv1", name: "Printing", price: 2.0, updatedAt: new Date() },
-    { id: "srv2", name: "Scanning", price: 3.0, updatedAt: new Date() },
-    { id: "srv3", name: "Photocopy", price: 1.5, updatedAt: new Date() },
-    { id: "srv4", name: "Lamination", price: 2.5, updatedAt: new Date() },
-    { id: "srv5", name: "Binding", price: 5.0, updatedAt: new Date() },
+    { id: cuid(), name: "Printing", price: 2.0, updatedAt: new Date() },
+    { id: cuid(), name: "Scanning", price: 3.0, updatedAt: new Date() },
+    { id: cuid(), name: "Photocopy", price: 1.5, updatedAt: new Date() },
+    { id: cuid(), name: "Lamination", price: 2.5, updatedAt: new Date() },
+    { id: cuid(), name: "Binding", price: 5.0, updatedAt: new Date() },
   ];
 
   for (const service of services) {
@@ -188,7 +190,7 @@ async function main() {
   // UsageHistory
   const usageHistories = [
     {
-      id: "usage1",
+      id: cuid(),
       customerId: "cust1",
       computerId: "comp1",
       startTime: new Date("2024-01-10T09:00:00Z"),
@@ -198,7 +200,7 @@ async function main() {
       updatedAt: new Date(),
     },
     {
-      id: "usage2",
+      id: cuid(),
       customerId: "cust2",
       computerId: "comp2",
       startTime: new Date("2024-01-11T10:00:00Z"),
@@ -208,7 +210,7 @@ async function main() {
       updatedAt: new Date(),
     },
     {
-      id: "usage3",
+      id: cuid(),
       customerId: "cust3",
       computerId: "comp3",
       startTime: new Date("2024-01-12T14:00:00Z"),
@@ -218,7 +220,7 @@ async function main() {
       updatedAt: new Date(),
     },
     {
-      id: "usage4",
+      id: cuid(),
       customerId: "cust4",
       computerId: "comp4",
       startTime: new Date("2024-01-13T09:00:00Z"),
@@ -228,7 +230,7 @@ async function main() {
       updatedAt: new Date(),
     },
     {
-      id: "usage5",
+      id: cuid(),
       customerId: "cust5",
       computerId: "comp5",
       startTime: new Date("2024-01-14T11:00:00Z"),
@@ -246,7 +248,7 @@ async function main() {
   // Invoices
   const invoices = [
     {
-      id: "inv1",
+      id: cuid(),
       customerId: "cust1",
       invoiceDate: new Date("2024-01-10T09:00:00Z"),
       totalAmount: 10.0,
@@ -254,7 +256,7 @@ async function main() {
       updatedAt: new Date(),
     },
     {
-      id: "inv2",
+      id: cuid(),
       customerId: "cust2",
       invoiceDate: new Date("2024-01-11T10:00:00Z"),
       totalAmount: 12.5,

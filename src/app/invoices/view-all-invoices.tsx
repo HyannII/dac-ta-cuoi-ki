@@ -17,6 +17,7 @@ export async function ViewAllInvoices() {
       <TableHeader>
         <TableRow>
           <TableHead>Ngày tạo hoá đơn</TableHead>
+          <TableHead>Tên khách hàng</TableHead>
           <TableHead>Thành tiền</TableHead>
           <TableHead>Trạng thái</TableHead>
         </TableRow>
@@ -27,6 +28,7 @@ export async function ViewAllInvoices() {
             <TableCell>
               {invoice.invoiceDate.toLocaleDateString("vi-VN")}
             </TableCell>
+            <TableCell>{invoice.customerId}</TableCell>
             <TableCell>{invoice.totalAmount.toLocaleString("vi-VN")}</TableCell>
             <TableCell>{invoice.status}</TableCell>
             <TableCell className="flex items-center">

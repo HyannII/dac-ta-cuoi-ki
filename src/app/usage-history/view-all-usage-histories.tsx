@@ -16,6 +16,11 @@ export async function ViewAllUsageHistories() {
       Customer: {
         select: {
           fullName: true,
+          Account: {
+            select: {
+              username: true, // Lấy thông tin username từ bảng Account
+            },
+          },
         },
       },
       Computer: {
@@ -25,10 +30,12 @@ export async function ViewAllUsageHistories() {
       },
     },
   });
+
   return (
     <Table>
       <TableHeader>
         <TableRow>
+          <TableHead>Tên tài khoản</TableHead>
           <TableHead>Tên khách hàng</TableHead>
           <TableHead>Tên máy tính</TableHead>
           <TableHead>Trạng thái</TableHead>
@@ -36,11 +43,13 @@ export async function ViewAllUsageHistories() {
           <TableHead>Thời gian kết thúc phiên</TableHead>
           <TableHead>Thời gian sử dụng</TableHead>
           <TableHead>Thành tiền</TableHead>
+          <TableHead>Hành động</TableHead>
         </TableRow>
       </TableHeader>
       <TableBody>
         {usageHistories.map((usageHistory) => (
           <TableRow key={usageHistory.id}>
+            <TableCell>{usageHistory.Customer.Account.username}</TableCell>
             <TableCell>{usageHistory.Customer.fullName}</TableCell>
             <TableCell>{usageHistory.Computer.name}</TableCell>
             <TableCell>

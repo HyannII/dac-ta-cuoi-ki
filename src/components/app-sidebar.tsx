@@ -1,4 +1,17 @@
-import { BookUser, Calendar, ContactRound, FileClock, Home, Inbox, PcCase, Salad, Search, Settings, SquareUserRound } from "lucide-react";
+import {
+  BookUser,
+  Calendar,
+  ContactRound,
+  FileClock,
+  Home,
+  Inbox,
+  PcCase,
+  Salad,
+  Search,
+  Settings,
+  SquareUserRound,
+  Zap,
+} from "lucide-react";
 
 import {
   Sidebar,
@@ -14,37 +27,42 @@ import {
 // Menu items.
 const items = [
   {
-    title: "Accounts",
+    title: "Tạo nhanh",
+    url: "/quick-create",
+    icon: Zap,
+  },
+  {
+    title: "Tài khoản",
     url: "/accounts",
     icon: SquareUserRound,
   },
   {
-    title: "Computers",
+    title: "Máy tính",
     url: "/computers",
     icon: PcCase,
   },
   {
-    title: "Customers",
+    title: "Khách hàng",
     url: "/customers",
     icon: Calendar,
   },
   {
-    title: "Invoices",
+    title: "Hoá đơn",
     url: "/invoices",
     icon: BookUser,
   },
   {
-    title: "Services",
+    title: "Dịch vụ",
     url: "#",
     icon: Salad,
   },
   {
-    title: "Staffs",
+    title: "Nhân viên",
     url: "#",
     icon: ContactRound,
   },
   {
-    title: "UsageHistory",
+    title: "Phiên sử dụng",
     url: "/usage-history",
     icon: FileClock,
   },
@@ -55,12 +73,12 @@ export function AppSidebar() {
     <Sidebar variant="inset">
       <SidebarContent>
         <SidebarGroup>
-          <SidebarGroupLabel>Application</SidebarGroupLabel>
+          <SidebarGroupLabel className="h-12 text-xl">Quản lí phòng máy</SidebarGroupLabel>
           <SidebarGroupContent>
             <SidebarMenu>
               {items.map((item) => (
-                <SidebarMenuItem key={item.title}>
-                  <SidebarMenuButton asChild>
+                <SidebarMenuItem key={item.title} className="h-12 flex items-center">
+                  <SidebarMenuButton asChild size={"lg"}>
                     <a href={item.url}>
                       <item.icon />
                       <span>{item.title}</span>
