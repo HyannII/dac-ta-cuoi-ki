@@ -53,12 +53,12 @@ const items = [
   },
   {
     title: "Dịch vụ",
-    url: "#",
+    url: "/services",
     icon: Salad,
   },
   {
     title: "Nhân viên",
-    url: "#",
+    url: "/staffs",
     icon: ContactRound,
   },
   {

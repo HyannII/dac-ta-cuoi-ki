@@ -86,7 +86,10 @@ export async function ViewAllUsageHistories() {
             </TableCell>
             <TableCell>
               {usageHistory.totalCost
-                ? usageHistory.totalCost.toFixed(0)
+                ? usageHistory.totalCost.toLocaleString("vi-VN", {
+                    style: "currency",
+                    currency: "VND",
+                  })
                 : "N/A"}
             </TableCell>
             <TableCell className="flex items-center">

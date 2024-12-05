@@ -66,7 +66,7 @@ model InvoiceService {
   totalPrice Float
   createdAt  DateTime @default(now())
   updatedAt  DateTime
-  Invoice    Invoice  @relation(fields: [invoiceId], references: [id])
+  Invoice    Invoice  @relation(fields: [invoiceId], references: [id], onDelete: Cascade)
   Service    Service  @relation(fields: [serviceId], references: [id])
 }
 

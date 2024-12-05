@@ -51,67 +51,133 @@ export async function getInvoiceById(id: string) {
   }
 }
 
-export async function getUsageHistoriesByCustomerId(id: string) {
+export async function getCustomerByAccountName(
+  username: string
+): Promise<string | null> {
   try {
-    const usageHistory = await prisma.usageHistory.findMany({
-    where: {
-      customerId: id,
+    const customer = await prisma.customer.findFirst({
+      where: {
+        Account: {
+          username: username,
+        },
+      },
+      select: {
+        id: true, // Chỉ lấy trường id
+      },
+    });
+
+    if (!customer) {
+      // Nếu không tìm thấy customer, trả về null
+      return null;
+    }
+
+    return customer.id; // Trả về customerId
+  } catch (error) {
+    console.error("Error fetching customer by account name:", error);
+    throw new Error("Không thể lấy thông tin customerId");
+  }
+}
+
+
+export async function getUsageHistoriesByCustomerId(customerId: string) {
+  const usageHistories = await prisma.usageHistory.findMany({
+    where: { customerId },
+    select: {
+      id: true,
+      customerId: true,
+      computerId: true,
+      totalCost: true,
+      invoiceId: true,
+      startTime: true,
+      endTime: true,
     },
   });
-    return usageHistory.map((history) => ({
-        id: history.id,
-        computerId: history.computerId,
-        startTime: history.startTime,
-        endTime: history.endTime,
-      })) 
-  }catch (error) {
-    console.error("Error fetching usageHistory:", error);
-    throw new Error("Unable to fetch usageHistory data");
-  }
+  return usageHistories;
 }
 
-export async function getCustomersByName(name: string){
+export async function getAllServices() {
   try {
-    const customer = await prisma.customer.findMany({
-      where: {
-        fullName: {
-          contains: name,
-        }
-      }
+    const services = await prisma.service.findMany({
+      select: {
+        id: true,
+        name: true,
+        price: true,
+      },
     });
-    return customer.map((customer) => ({
-      id: customer.id,
-      fullName: customer.fullName,
-      citizenId: customer.citizenId,
-      phoneNumber: customer.phoneNumber || "",
-      email: customer.email || "",
-      membershipLevel: customer.membershipLevel,
-      balance: customer.balance,
-    }))
-  }catch (error) {
-    console.error("Error fetching customer:", error);
-    throw new Error("Unable to fetch customer data");
+    return services;
+  } catch (error) {
+    console.error("Error fetching services:", error);
+    throw new Error("Không thể lấy danh sách dịch vụ");
   }
 }
 
-export async function createInvoice(formData: FormData) {
-  await prisma.invoice.create({
+export async function getCustomerByCitizenId(citizenId: string) {
+  return await prisma.customer.findUnique({
+    where: { citizenId },
+  });
+}
+
+export async function createNewInvoice(
+  customerId: string,
+  totalAmount: number
+) {
+  return await prisma.invoice.create({
     data: {
       id: cuid(),
-      customerId: await prisma.customer
-        .findUniqueOrThrow({
-          where: { citizenId: formData.get("customerCitizenId") as string },
-          select: { id: true },
-        })
-        .then(({ id }) => id),
-      invoiceDate: new Date(),
-      totalAmount: Number(formData.get("totalAmount")),
-      status: formData.get("status") as string,
+      customerId,
+      totalAmount,
+      status: "Unpaid",
       updatedAt: new Date(),
     },
   });
-  revalidatePath("/invoices");
 }
+
+export async function getServicesByNames(serviceNames: string[]) {
+  return await prisma.service.findMany({
+    where: { name: { in: serviceNames } },
+    select: { id: true, name: true },
+  });
+}
+
+export async function linkUsageHistoryToInvoice(
+  selectedUsageIds: string[],
+  invoiceId: string
+) {
+  return await prisma.usageHistory.updateMany({
+    where: { id: { in: selectedUsageIds } },
+    data: { invoiceId },
+  });
+}
+
+export async function createInvoiceServices(
+  invoiceId: string,
+  servicesToAdd: Array<{
+    id: string;
+    serviceId: string;
+    quantity: number;
+    totalPrice: number;
+  }>
+) {
+  if (!servicesToAdd || servicesToAdd.length === 0) {
+    throw new Error("Services to add cannot be empty.");
+  }
+
+  try {
+    const createdServices = await prisma.invoiceService.createMany({
+      data: servicesToAdd.map((service) => ({
+        ...service,
+        invoiceId, // Đảm bảo mỗi dịch vụ được liên kết với hóa đơn,
+        updatedAt: new Date(),
+      })),
+    });
+
+    return createdServices;
+  } catch (error) {
+    console.error("Error creating invoice services:", error);
+    throw new Error("Unable to create invoice services.");
+  }
+}
+
 
 export async function editInvoice(formData: FormData, id: string) {
   const customerCitizenId = formData.get("customerCitizenId") as string;
@@ -120,10 +186,14 @@ export async function editInvoice(formData: FormData, id: string) {
   const status = formData.get("status") as string;
 
   if (!customerCitizenId || !usageHistoriesRaw) {
-    throw new Error("Missing customerCitizenId or usageHistories in form data.");
+    throw new Error(
+      "Missing customerCitizenId or usageHistories in form data."
+    );
   }
 
-  const selectedUsageHistories = JSON.parse(usageHistoriesRaw as string) as string[];
+  const selectedUsageHistories = JSON.parse(
+    usageHistoriesRaw as string
+  ) as string[];
 
   try {
     // Tìm ID của khách hàng dựa trên citizenId
@@ -179,9 +249,19 @@ export async function editInvoice(formData: FormData, id: string) {
   }
 }
 
-
-
 export async function deleteInvoice(id: string) {
-  await prisma.invoice.delete({ where: { id } });
-  revalidatePath("/invoices");
+  try {
+    await prisma.invoice.delete({
+      where: { id },
+    });
+    revalidatePath("/invoices");
+    console.log(
+      `Invoice with ID ${id} deleted successfully with cascading delete`
+    );
+  } catch (error) {
+    console.error("Error deleting invoice:", error);
+    throw new Error("Unable to delete invoice. Please try again.");
+  }
 }
+
+
