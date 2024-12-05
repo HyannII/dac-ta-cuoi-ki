@@ -6,6 +6,7 @@ import {
   createInvoiceServices,
   linkUsageHistoryToInvoice,
   getCustomerByAccountName,
+  getUsageHistoriesByIds,
 } from "./invoice-actions";
 
 export async function createInvoice(
@@ -22,7 +23,7 @@ export async function createInvoice(
   });
 
   // Lấy danh sách dịch vụ từ `formData`
-  const services: { name: string; price: number }[] = [];
+  const services: { name: string; price: number; quantity: number }[] = [];
 
   formData.forEach((value, key) => {
     const match = key.match(/^services\[(\d+)\]\[(.+)\]$/);
@@ -30,10 +31,12 @@ export async function createInvoice(
       const index = parseInt(match[1], 10);
       const field = match[2];
 
-      if (field === "name" || field === "price") {
+      if (field === "name" || field === "price" || field === "quantity") {
         services[index] = services[index] || {};
         services[index][field] =
-          field === "price" ? parseFloat(value as string) : (value as string);
+          field === "price" || field === "quantity"
+            ? parseFloat(value as string)
+            : (value as string);
       }
     }
   });
@@ -54,12 +57,29 @@ export async function createInvoice(
     const customer = await getCustomerByAccountName(accountName);
     if (!customer) throw new Error("Không tìm thấy khách hàng");
 
-    const totalAmount = services.reduce(
-      (sum, service) => sum + service.price,
+    // Lấy thông tin UsageHistory từ selectedUsageIds
+    const usageHistories = await getUsageHistoriesByIds(selectedUsageIds);
+
+    if (!usageHistories || usageHistories.length === 0) {
+      return { error: "Usage Histories are invalid or not found" };
+    }
+
+    // Tính tổng tiền từ UsageHistory
+    const totalUsageCost = usageHistories.reduce(
+      (sum, history) => sum + (history.totalCost || 0),
       0
     );
 
-      const invoice = await createNewInvoice(customer, totalAmount);
+    // Tính tổng tiền từ dịch vụ
+    const totalServiceCost = services.reduce(
+      (sum, service) => sum + service.price * service.quantity,
+      0
+    );
+
+    // Tính tổng tiền hóa đơn
+    const totalAmount = totalUsageCost + totalServiceCost;
+
+    const invoice = await createNewInvoice(customer, totalAmount);
 
     const existingServices = await getServicesByNames(
       services.map((service) => service.name)
@@ -75,8 +95,8 @@ export async function createInvoice(
             id: cuid(),
             invoiceId: invoice.id,
             serviceId: existingService.id,
-            quantity: 1,
-            totalPrice: service.price,
+            quantity: service.quantity,
+            totalPrice: service.price * service.quantity,
           };
         }
         return null;

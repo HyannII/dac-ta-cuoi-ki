@@ -74,7 +74,8 @@ export async function ViewAllInvoices() {
                       {service.Service.price.toLocaleString("vi-VN", {
                         style: "currency",
                         currency: "VND",
-                      })}
+                    })} -{" "}
+                      {service.quantity}
                     </li>
                   ))}
                 </ul>

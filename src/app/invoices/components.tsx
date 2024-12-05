@@ -44,8 +44,8 @@ export function CreateButton(): JSX.Element {
 
   const [selectedUsageIds, setSelectedUsageIds] = useState<string[]>([]);
   const [selectedServices, setSelectedServices] = useState<
-    { id: string; name: string; price: number }[]
-    >([]);
+    { id: string; name: string; price: number; quantity: number }[]
+  >([]);
   const [isCustomerLoaded, setIsCustomerLoaded] = useState<boolean>(false);
 
   const handleSearchUsageHistory = async () => {
@@ -75,7 +75,9 @@ export function CreateButton(): JSX.Element {
       // Lọc các usageHistory với customerId và endTime không phải null
       const filteredHistories = histories.filter(
         (history) =>
-          history.customerId === customerId && history.endTime !== null && !history.invoiceId
+          history.customerId === customerId &&
+          history.endTime !== null &&
+          !history.invoiceId
       );
 
       // Nếu totalCost có thể là null, bạn có thể thay đổi nó thành một giá trị mặc định như 0
@@ -114,11 +116,9 @@ export function CreateButton(): JSX.Element {
       const exists = prev.find((s) => s.id === service.id);
 
       if (exists) {
-        // Nếu dịch vụ đã được chọn, loại bỏ khỏi danh sách
         return prev.filter((s) => s.id !== service.id);
       } else {
-        // Nếu dịch vụ chưa được chọn, thêm vào danh sách
-        return [...prev, service];
+        return [...prev, { ...service, quantity: 1 }]; // Mặc định số lượng là 1 khi thêm dịch vụ
       }
     });
   };
@@ -157,6 +157,10 @@ export function CreateButton(): JSX.Element {
     selectedServices.forEach((service, index) => {
       formData.append(`services[${index}][name]`, service.name);
       formData.append(`services[${index}][price]`, service.price.toString());
+      formData.append(
+        `services[${index}][quantity]`,
+        service.quantity.toString()
+      );
     });
 
     try {
@@ -169,7 +173,7 @@ export function CreateButton(): JSX.Element {
     } catch (error) {
       console.error(error);
     }
-        // revalidatePath("/invoices");
+    // revalidatePath("/invoices");
   };
 
   return (
@@ -242,6 +246,24 @@ export function CreateButton(): JSX.Element {
                   <label>
                     {service.name} - {service.price} VND
                   </label>
+                  {/* Chỉ hiển thị ô nhập số lượng khi dịch vụ được chọn */}
+                  {selectedServices.some((s) => s.id === service.id) && (
+                    <Input
+                      type="number"
+                      value={
+                        selectedServices.find((s) => s.id === service.id)
+                          ?.quantity || 1
+                      }
+                      min="1"
+                      onChange={(e) =>
+                        handleQuantityChange(
+                          service.id,
+                          parseInt(e.target.value)
+                        )
+                      }
+                      className="ml-2 p-1 border"
+                    />
+                  )}
                 </div>
               ))}
             </div>

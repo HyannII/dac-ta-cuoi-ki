@@ -95,6 +95,14 @@ export async function getUsageHistoriesByCustomerId(customerId: string) {
   return usageHistories;
 }
 
+export async function getUsageHistoriesByIds(ids: string[]) {
+  return prisma.usageHistory.findMany({
+    where: { id: { in: ids } },
+    select: { id: true, totalCost: true }, // Lấy các trường cần thiết
+  });
+}
+
+
 export async function getAllServices() {
   try {
     const services = await prisma.service.findMany({
