@@ -18,7 +18,7 @@ export async function ViewAllUsageHistories() {
           fullName: true,
           Account: {
             select: {
-              username: true, // Lấy thông tin username từ bảng Account
+              username: true,
             },
           },
         },
@@ -62,18 +62,18 @@ export async function ViewAllUsageHistories() {
                 year: "numeric",
                 hour: "2-digit",
                 minute: "2-digit",
-                hour12: false, // Hiển thị giờ theo định dạng 24 giờ
+                hour12: false,
               })}
             </TableCell>
             <TableCell>
               {usageHistory.endTime
-                ? usageHistory.endTime.toLocaleDateString("vi-VN", {
+                ? usageHistory.endTime.toLocaleString("vi-VN", {
                     day: "2-digit",
                     month: "2-digit",
                     year: "numeric",
                     hour: "2-digit",
                     minute: "2-digit",
-                    hour12: false, // Hiển thị giờ theo định dạng 24 giờ
+                    hour12: false,
                   })
                 : "N/A"}
             </TableCell>
@@ -93,11 +93,15 @@ export async function ViewAllUsageHistories() {
                 : "N/A"}
             </TableCell>
             <TableCell className="flex items-center">
-              <EditButton id={usageHistory.id} />
-              <Separator
-                orientation="vertical"
-                className="mx-2 h-6"
-              />
+              {!usageHistory.endTime && (
+                <>
+                  <EditButton id={usageHistory.id} />
+                  <Separator
+                    orientation="vertical"
+                    className="mx-2 h-6"
+                  />
+                </>
+              )}
               <DeleteButton id={usageHistory.id} />
             </TableCell>
           </TableRow>

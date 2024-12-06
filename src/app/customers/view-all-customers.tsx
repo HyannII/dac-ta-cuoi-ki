@@ -43,7 +43,7 @@ export async function ViewAllCustomers() {
             <TableCell>{customer.phoneNumber}</TableCell>
             <TableCell>{customer.email}</TableCell>
             <TableCell>{customer.membershipLevel}</TableCell>
-            <TableCell>{customer.balance.toLocaleString("vi-VN")}</TableCell>
+            <TableCell>{customer.balance.toLocaleString("vi-VN", {style: "currency", currency: "VND"})}</TableCell>
             <TableCell className="flex items-center">
               <EditButton id={customer.id} />
               <Separator

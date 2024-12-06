@@ -83,11 +83,9 @@ interface UsageDetails {
 export async function createUsageHistory(
   formData: FormData
 ): Promise<{ error?: string; success?: boolean; usageDetails?: UsageDetails }> {
-  // Lấy username từ formData
   const customerUsername = formData.get("customerUsername") as string;
   const computerName = formData.get("computerName") as string;
 
-  // Tìm `id` tài khoản từ `username`
   const accountId = await prisma.account
     .findUniqueOrThrow({
       where: { username: customerUsername },
@@ -95,23 +93,20 @@ export async function createUsageHistory(
     })
     .then(({ id }) => id);
 
-  // Tìm `id` khách hàng từ `accountId`
   const customerId = await prisma.customer
     .findUniqueOrThrow({
       where: { accountId },
-      select: { id: true, fullName: true }, // Include `name` field here
+      select: { id: true, fullName: true },
     })
     .then(({ id, fullName }) => ({ id, fullName }));
 
-  // Kiểm tra xem có phiên sử dụng nào của khách hàng này chưa kết thúc (không có endDate)
   const existingUsage = await prisma.usageHistory.findFirst({
     where: {
       customerId: customerId.id,
-      endTime: null, // Nếu `endTime` là null, phiên sử dụng chưa kết thúc
+      endTime: null,
     },
   });
 
-  // Nếu đã có phiên sử dụng chưa kết thúc, ngừng tạo mới và trả về lỗi
   if (existingUsage) {
     return {
       error:
@@ -119,15 +114,25 @@ export async function createUsageHistory(
     };
   }
 
-  // Tìm `id` máy tính từ tên máy tính
-  const computer = await prisma.computer
-    .findUniqueOrThrow({
-      where: { name: computerName },
-      select: { id: true, name: true }, // Include `name` field here
-    })
-    .then(({ id, name }) => ({ id, name }));
+  // Kiểm tra trạng thái của máy tính
+  const computer = await prisma.computer.findUniqueOrThrow({
+    where: { name: computerName },
+    select: { id: true, name: true, status: true },
+  });
 
-  // Tạo lịch sử sử dụng mới
+  if (computer.status === "online") {
+    return {
+      error:
+        "Máy tính này đang online và không thể được sử dụng cho phiên mới.",
+    };
+  }
+
+  // Cập nhật trạng thái máy tính thành online
+  await prisma.computer.update({
+    where: { id: computer.id },
+    data: { status: "online" },
+  });
+
   const usage = await prisma.usageHistory.create({
     data: {
       id: cuid(),
@@ -138,10 +143,8 @@ export async function createUsageHistory(
     },
   });
 
-  // Cập nhật lại dữ liệu trên trang
   revalidatePath("/usage-history");
 
-  // Return the enriched usageDetails
   const usageDetails: UsageDetails = {
     customerUsername,
     customerName: customerId.fullName,
@@ -152,6 +155,7 @@ export async function createUsageHistory(
   return { success: true, usageDetails };
 }
 
+
 export async function editUsageHistory(
   formData: FormData,
   id: string,
@@ -159,7 +163,7 @@ export async function editUsageHistory(
 ) {
   const usageHistory = await prisma.usageHistory.findUniqueOrThrow({
     where: { id },
-    select: { startTime: true },
+    select: { startTime: true, computerId: true },
   });
 
   let endTime = null;
@@ -171,17 +175,19 @@ export async function editUsageHistory(
     totalHours =
       (endTime.getTime() - usageHistory.startTime.getTime()) / (1000 * 60 * 60);
     totalCost = totalHours * 5000; // Giá 5000/giờ
+
+    // Cập nhật trạng thái máy tính thành offline
+    await prisma.computer.update({
+      where: { id: usageHistory.computerId },
+      data: { status: "offline" },
+    });
   }
 
-  // Lấy username từ formData
   const customerUsername = formData.get("customerUsername");
-
-  // Kiểm tra giá trị customerUsername
   if (!customerUsername) {
     throw new Error("Tên tài khoản khách hàng không được để trống.");
   }
 
-  // Tìm accountId từ username
   const accountId = await prisma.account
     .findUniqueOrThrow({
       where: { username: customerUsername as string },
@@ -189,7 +195,6 @@ export async function editUsageHistory(
     })
     .then(({ id }) => id);
 
-  // Tìm customerId từ accountId
   const customerId = await prisma.customer
     .findUniqueOrThrow({
       where: { accountId },
@@ -197,7 +202,6 @@ export async function editUsageHistory(
     })
     .then(({ id }) => id);
 
-  // Tìm computerId từ tên máy tính
   const computerName = formData.get("computerName");
 
   if (!computerName) {
@@ -211,7 +215,6 @@ export async function editUsageHistory(
     })
     .then(({ id }) => id);
 
-  // Cập nhật lịch sử sử dụng
   await prisma.usageHistory.update({
     where: { id },
     data: {
@@ -224,9 +227,9 @@ export async function editUsageHistory(
     },
   });
 
-  // Cập nhật lại dữ liệu trên trang
   revalidatePath("/usage-history");
 }
+
 
 
 

@@ -26,6 +26,7 @@ import React, { useEffect, useState } from "react";
 import { createInvoice } from "@/actions/invoice-handler";
 import { Checkbox } from "@/components/ui/checkbox";
 import { revalidatePath } from "next/cache";
+import { Card, CardHeader, CardContent } from "@/components/ui/card";
 
 export function CreateButton(): JSX.Element {
   const [accountName, setAccountName] = useState<string>("");
@@ -38,11 +39,9 @@ export function CreateButton(): JSX.Element {
       endTime: Date | null;
     }[]
   >([]);
-
   const [allServices, setAllServices] = useState<
     { id: string; name: string; price: number }[]
   >([]);
-
   const [selectedUsageIds, setSelectedUsageIds] = useState<string[]>([]);
   const [selectedServices, setSelectedServices] = useState<
     { id: string; name: string; price: number; quantity: number }[]
@@ -54,40 +53,25 @@ export function CreateButton(): JSX.Element {
       alert("Vui lòng nhập Account ID.");
       return;
     }
-
     try {
-      // Gọi API để lấy customerId từ accountName
       const customerId = await getCustomerByAccountName(accountName);
-
       if (!customerId) {
-        // Kiểm tra nếu customerId là null
         alert("Không tìm thấy khách hàng với Account ID này.");
-        return; // Ngừng thực hiện nếu không tìm thấy customer
+        return;
       }
       setIsCustomerLoaded(true);
-
-      // Gọi API để lấy usageHistory dựa trên customerId
       const histories = await getUsageHistoriesByCustomerId(customerId);
-
-      if (histories.length === 0) {
-        alert("Không có Usage History nào được tìm thấy.");
-      }
-
-      // Lọc các usageHistory với customerId và endTime không phải null
       const filteredHistories = histories.filter(
         (history) =>
           history.customerId === customerId &&
           history.endTime !== null &&
           !history.invoiceId
       );
-
-      // Nếu totalCost có thể là null, bạn có thể thay đổi nó thành một giá trị mặc định như 0
       const historiesWithValidTotalCost = filteredHistories.map((history) => ({
         ...history,
-        totalCost: history.totalCost ?? 0, // Nếu totalCost là null, gán nó bằng 0
+        totalCost: history.totalCost ?? 0,
       }));
-
-      setUsageHistory(historiesWithValidTotalCost); // Cập nhật state với giá trị totalCost đã thay đổi
+      setUsageHistory(historiesWithValidTotalCost);
     } catch (error) {
       console.error("Error fetching usage history:", error);
       alert("Có lỗi xảy ra khi tìm Usage History.");
@@ -97,14 +81,13 @@ export function CreateButton(): JSX.Element {
   useEffect(() => {
     const fetchServices = async () => {
       try {
-        const services = await getAllServices(); // Gọi hàm getAllServices
-        setAllServices(services); // Cập nhật state với danh sách dịch vụ
+        const services = await getAllServices();
+        setAllServices(services);
       } catch (error) {
         console.error("Error fetching services:", error);
         alert("Không thể lấy danh sách dịch vụ.");
       }
     };
-
     fetchServices();
   }, []);
 
@@ -115,14 +98,12 @@ export function CreateButton(): JSX.Element {
   }) => {
     setSelectedServices((prev) => {
       const exists = prev.find((s) => s.id === service.id);
-
-      if (exists) {
-        return prev.filter((s) => s.id !== service.id);
-      } else {
-        return [...prev, { ...service, quantity: 1 }]; // Mặc định số lượng là 1 khi thêm dịch vụ
-      }
+      return exists
+        ? prev.filter((s) => s.id !== service.id)
+        : [...prev, { ...service, quantity: 1 }];
     });
   };
+
   const handleQuantityChange = (serviceId: string, quantity: number) => {
     setSelectedServices((prev) =>
       prev.map((service) =>
@@ -132,29 +113,28 @@ export function CreateButton(): JSX.Element {
   };
 
   const handleUsageChange = (id: string) => {
-    setSelectedUsageIds((prev) => {
-      if (prev.includes(id)) {
-        // Nếu usageHistory đã được chọn, loại bỏ khỏi danh sách
-        return prev.filter((usageId) => usageId !== id);
-      } else {
-        // Nếu usageHistory chưa được chọn, thêm vào danh sách
-        return [...prev, id];
-      }
-    });
+    setSelectedUsageIds((prev) =>
+      prev.includes(id)
+        ? prev.filter((usageId) => usageId !== id)
+        : [...prev, id]
+    );
   };
 
   const handleSubmit = async (e: React.MouseEvent<HTMLButtonElement>) => {
     e.preventDefault();
 
+    if (selectedUsageIds.length === 0 && selectedServices.length === 0) {
+      alert("Vui lòng chọn ít nhất một loại (phiên sử dụng hoặc dịch vụ).");
+      return;
+    }
+
     const formData = new FormData();
-    formData.append("accountName", accountName); // Thêm accountName vào formData
+    formData.append("accountName", accountName);
 
-    // Thêm từng `selectedUsageId` vào formData
-    selectedUsageIds.forEach((id) => {
-      formData.append("selectedUsageIds[]", id); // Truyền từng `id` dưới dạng một mục riêng
-    });
+    // Chỉ gửi selectedUsageIds nếu có
+    selectedUsageIds.forEach((id) => formData.append("selectedUsageIds[]", id));
 
-    // Thêm dịch vụ vào formData
+    // Chỉ gửi dịch vụ nếu có
     selectedServices.forEach((service, index) => {
       formData.append(`services[${index}][name]`, service.name);
       formData.append(`services[${index}][price]`, service.price.toString());
@@ -165,7 +145,7 @@ export function CreateButton(): JSX.Element {
     });
 
     try {
-      const result = await createInvoice(formData); // Gọi hàm tạo hóa đơn
+      const result = await createInvoice(formData);
       if (result.error) {
         alert(result.error);
       } else {
@@ -174,44 +154,44 @@ export function CreateButton(): JSX.Element {
     } catch (error) {
       console.error(error);
     }
-    // revalidatePath("/invoices");
   };
+
 
   return (
     <Dialog>
       <DialogTrigger asChild>
-        <Button variant="outline">
+        <Button
+          variant="outline"
+          className="flex items-center gap-2"
+        >
           <Plus className="h-4 w-4" />
           Tạo Hóa Đơn
         </Button>
       </DialogTrigger>
-      <DialogContent>
+      <DialogContent className="max-w-lg p-4 space-y-4">
         <DialogHeader>
-          <DialogTitle>Tạo Hóa Đơn</DialogTitle>
+          <DialogTitle className="text-lg font-bold">Tạo Hóa Đơn</DialogTitle>
         </DialogHeader>
 
-        {/* Nhập Account ID */}
         <div className="flex flex-col gap-2">
-          <Label>Nhập Account ID</Label>
+          <Label className="font-medium">Nhập tên tài khoản</Label>
           <div className="flex gap-2">
             <Input
               type="text"
-              name="accountName"
-              placeholder="Nhập Account ID"
+              placeholder="Nhập tên tài khoản"
               value={accountName}
               onChange={(e) => setAccountName(e.target.value)}
             />
             <Button
               onClick={handleSearchUsageHistory}
-              className="bg-blue-500 text-white px-4 py-2 rounded"
+              className=""
             >
               Tìm
             </Button>
           </div>
         </div>
 
-        {/* Hiển thị Usage History */}
-        {usageHistory.length > 0 && (
+        {usageHistory.length > 0 ? (
           <div>
             <h3 className="font-bold text-lg mb-2">Chọn phiên sử dụng:</h3>
             <div className="space-y-2">
@@ -225,16 +205,23 @@ export function CreateButton(): JSX.Element {
                     onCheckedChange={() => handleUsageChange(history.id)}
                   />
                   <label>
-                    Máy {history.computerId} - Chi phí: {history.totalCost} VND
+                    Máy {history.computerId} - Chi phí:{" "}
+                    {history.totalCost.toLocaleString("vi-VN", {
+                      style: "currency",
+                      currency: "VND",
+                    })}
                   </label>
                 </div>
               ))}
             </div>
           </div>
+        ) : (
+          isCustomerLoaded && (
+            <p className="text-sm text-gray-500">Không có phiên sử dụng nào.</p>
+          )
         )}
 
-        {/* Hiển thị danh sách Services */}
-        {isCustomerLoaded && allServices.length > 0 && (
+        {isCustomerLoaded && allServices.length > 0 ? (
           <div>
             <h3 className="font-bold text-lg mb-2">Chọn dịch vụ:</h3>
             <div className="space-y-2">
@@ -247,9 +234,12 @@ export function CreateButton(): JSX.Element {
                     onCheckedChange={() => handleServiceChange(service)}
                   />
                   <label>
-                    {service.name} - {service.price} VND
+                    {service.name} -{" "}
+                    {service.price.toLocaleString("vi-VN", {
+                      style: "currency",
+                      currency: "VND",
+                    })}
                   </label>
-                  {/* Chỉ hiển thị ô nhập số lượng khi dịch vụ được chọn */}
                   {selectedServices.some((s) => s.id === service.id) && (
                     <Input
                       type="number"
@@ -264,20 +254,23 @@ export function CreateButton(): JSX.Element {
                           parseInt(e.target.value)
                         )
                       }
-                      className="ml-2 p-1 border"
+                      className="ml-2 p-1 border w-16"
                     />
                   )}
                 </div>
               ))}
             </div>
           </div>
+        ) : (
+          isCustomerLoaded && (
+            <p className="text-sm text-gray-500">Không có dịch vụ nào.</p>
+          )
         )}
 
-        {/* Nút tạo hóa đơn */}
         <DialogFooter>
           <Button
             onClick={handleSubmit}
-            className="bg-green-500 text-white px-4 py-2 rounded w-full"
+            className="w-full"
           >
             Tạo hóa đơn
           </Button>
@@ -309,17 +302,41 @@ export function EditButton({ id }: { id: string }): JSX.Element {
     customer?: { citizenId: string };
   } | null>(null);
 
-  useEffect(() => {
-    getInvoiceById(id).then(setInvoice).catch(console.error);
-  }, [id]);
-
   const [isPaid, setIsPaid] = useState(false);
 
   useEffect(() => {
-    if (invoice) {
-      setIsPaid(invoice.status === "Đã thanh toán");
+    const fetchInvoice = async () => {
+      try {
+        const fetchedInvoice = await getInvoiceById(id);
+        if (fetchedInvoice === null) {
+          throw new Error("Invoice not found.");
+        }
+        setInvoice(fetchedInvoice);
+        setIsPaid(fetchedInvoice.status === "Đã thanh toán");
+      } catch (error) {
+        console.error("Error fetching invoice:", error);
+        alert("Lỗi khi lấy hóa đơn.");
+      }
+    };
+
+    fetchInvoice();
+  }, [id]);
+
+  const handleSave = async (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    if (!invoice) return;
+
+    const formData = new FormData(e.currentTarget);
+    formData.set("status", isPaid ? "Đã thanh toán" : "Chưa thanh toán");
+
+    try {
+      await editInvoice(formData, id);
+      alert("Hóa đơn đã được cập nhật thành công!");
+    } catch (error) {
+      console.error("Error updating invoice:", error);
+      alert("Cập nhật hóa đơn thất bại.");
     }
-  }, [invoice]);
+  };
 
   return (
     <Dialog>
@@ -328,78 +345,163 @@ export function EditButton({ id }: { id: string }): JSX.Element {
           <Pencil className="h-4 w-4" />
         </Button>
       </DialogTrigger>
-      <DialogContent>
-        <DialogHeader>
-          <DialogTitle>Sửa thông tin hóa đơn</DialogTitle>
+      <DialogContent className="max-w-[min(90vw,1200px)] max-h-[90vh] overflow-auto space-y-4">
+        <DialogHeader className="items-center">
+          <DialogTitle className="text-lg font-bold">
+            Sửa thông tin hóa đơn
+          </DialogTitle>
         </DialogHeader>
-        <form
-          onSubmit={async (e) => {
-            e.preventDefault();
-            const formData = new FormData(e.currentTarget);
+        {invoice ? (
+          <form
+            onSubmit={handleSave}
+            className="space-y-4"
+          >
+            {/* Ngày lập hóa đơn */}
+            <div>
+              <Label className="font-semibold">Ngày lập hóa đơn</Label>
+              <Input
+                type="text"
+                value={invoice.invoiceDate.toLocaleDateString("vi-VN")}
+                readOnly
+                className="w-full bg-muted/10"
+              />
+            </div>
 
-            if (!invoice) return;
-            formData.set(
-              "status",
-              isPaid ? "Đã thanh toán" : "Chưa thanh toán"
-            );
-            await editInvoice(formData, id);
-          }}
-        >
-          <Label>Ngày lập hóa đơn</Label>
-          <Input
-            type="text"
-            value={invoice?.invoiceDate.toLocaleDateString("vi-VN") || ""}
-            readOnly
-          />
+            {/* Tổng tiền */}
+            <div>
+              <Label className="font-semibold">Tổng tiền</Label>
+              <Input
+                type="text"
+                value={`${invoice.totalAmount.toLocaleString("vi-VN", {
+                  style: "currency",
+                  currency: "VND",
+                })}`}
+                readOnly
+                className="w-full bg-muted/10"
+              />
+            </div>
 
-          <Label>Tổng tiền</Label>
-          <Input
-            type="number"
-            value={invoice?.totalAmount || ""}
-            readOnly
-          />
+            {/* Trạng thái thanh toán */}
+            <div className="flex items-center gap-4">
+              <Checkbox
+                id="status"
+                checked={isPaid}
+                onCheckedChange={(checked) => setIsPaid(!!checked)}
+                disabled={invoice.status === "Đã thanh toán"}
+              />
+              <Label htmlFor="status">Đã thanh toán</Label>
+            </div>
 
-          <Label>Trạng thái</Label>
-          <div className="flex items-center space-x-2">
-            <Checkbox
-              id="status"
-              checked={isPaid}
-              onCheckedChange={(checked) => setIsPaid(!!checked)}
-              disabled={invoice?.status === "Đã thanh toán"} // Không thể sửa nếu đã thanh toán
-            />
-            <Label htmlFor="status">
-              {isPaid ? "Đã thanh toán" : "Chưa thanh toán"}
-            </Label>
-          </div>
+            {/* Lịch sử sử dụng */}
+            <div>
+              <Label className="font-semibold">Phiên sử dụng</Label>
+              {invoice.usageHistories.length > 0 ? (
+                <div className="grid grid-cols-3 gap-4">
+                  {invoice.usageHistories.map((history) => (
+                    <Card key={history.id}>
+                      <CardHeader>
+                        <p className="text-sm font-medium text-muted-foreground">
+                          Máy: {history.computerId}
+                        </p>
+                      </CardHeader>
+                      <CardContent>
+                        <p>
+                          <strong>Bắt đầu:</strong>{" "}
+                          {history.startTime.toLocaleString("vi-VN")}
+                        </p>
+                        <p>
+                          <strong>Kết thúc:</strong>{" "}
+                          {history.endTime
+                            ? history.endTime.toLocaleString("vi-VN")
+                            : "Chưa kết thúc"}
+                        </p>
+                        <p>
+                          <strong>Tổng giờ:</strong>{" "}
+                          {history.totalHours
+                            ? `${Math.floor(
+                                history.totalHours
+                              )} giờ ${Math.round(
+                                (history.totalHours % 1) * 60
+                              )} phút`
+                            : "N/A"}
+                        </p>
+                        <p>
+                          <strong>Tổng tiền:</strong>{" "}
+                          {history.totalCost?.toLocaleString("vi-VN", {
+                            style: "currency",
+                            currency: "VND",
+                          }) || "N/A"}
+                        </p>
+                      </CardContent>
+                    </Card>
+                  ))}
+                </div>
+              ) : (
+                <p className="text-muted-foreground italic">
+                  Không có phiên sử dụng.
+                </p>
+              )}
+            </div>
 
-          <Label>Lịch sử sử dụng</Label>
-          <ul>
-            {invoice?.usageHistories.map((history) => (
-              <li key={history.id}>
-                Máy tính: {history.computerId}, Bắt đầu:{" "}
-                {history.startTime.toLocaleString("vi-VN")}, Kết thúc:{" "}
-                {history.endTime
-                  ? history.endTime.toLocaleString("vi-VN")
-                  : "Chưa kết thúc"}
-                , Tổng giờ: {history.totalHours}, Tổng tiền:{" "}
-                {history.totalCost?.toLocaleString("vi-VN")} VNĐ
-              </li>
-            ))}
-          </ul>
+            {/* Dịch vụ đã sử dụng */}
+            <div>
+              <Label className="font-semibold">Dịch vụ đã sử dụng</Label>
+              {invoice.services.length > 0 ? (
+                <div className="grid grid-cols-3 gap-4">
+                  {invoice.services.map((service) => (
+                    <Card key={service.id}>
+                      <CardHeader>
+                        <p className="text-sm font-medium text-muted-foreground">
+                          {service.name}
+                        </p>
+                      </CardHeader>
+                      <CardContent>
+                        <p>
+                          <strong>Số lượng:</strong> {service.quantity}
+                        </p>
+                        <p>
+                          <strong>Đơn giá:</strong>{" "}
+                          {service.price.toLocaleString("vi-VN", {
+                            style: "currency",
+                            currency: "VND",
+                          })}
+                        </p>
+                        <p>
+                          <strong>Thành tiền:</strong>{" "}
+                          {(service.quantity * service.price).toLocaleString(
+                            "vi-VN",
+                            {
+                              style: "currency",
+                              currency: "VND",
+                            }
+                          )}
+                        </p>
+                      </CardContent>
+                    </Card>
+                  ))}
+                </div>
+              ) : (
+                <p className="text-muted-foreground italic">
+                  Không có dịch vụ nào.
+                </p>
+              )}
+            </div>
 
-          <Label>Dịch vụ đã sử dụng</Label>
-          <ul>
-            {invoice?.services.map((service) => (
-              <li key={service.id}>
-                {service.name}: {service.quantity} x{" "}
-                {service.price.toLocaleString("vi-VN")} VNĐ ={" "}
-                {(service.quantity * service.price).toLocaleString("vi-VN")} VNĐ
-              </li>
-            ))}
-          </ul>
-
-          <Button type="submit">Lưu</Button>
-        </form>
+            {/* Nút lưu */}
+            <div className="flex justify-end">
+              <Button
+                type="submit"
+                className="w-full"
+              >
+                Lưu
+              </Button>
+            </div>
+          </form>
+        ) : (
+          <p className="text-center text-muted-foreground italic">
+            Đang tải thông tin hóa đơn...
+          </p>
+        )}
       </DialogContent>
     </Dialog>
   );

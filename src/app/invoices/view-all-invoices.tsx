@@ -46,8 +46,8 @@ export async function ViewAllInvoices() {
           <TableHead>Tên khách hàng</TableHead>
           <TableHead>Thành tiền</TableHead>
           <TableHead>Trạng thái</TableHead>
+          <TableHead>Phiên sử dụng</TableHead>
           <TableHead>Dịch vụ</TableHead>
-          <TableHead>Lịch sử sử dụng</TableHead>
           <TableHead>Hành động</TableHead>
         </TableRow>
       </TableHeader>
@@ -65,24 +65,6 @@ export async function ViewAllInvoices() {
               })}
             </TableCell>
             <TableCell>{invoice.status}</TableCell>
-            <TableCell>
-              {invoice.InvoiceService?.length > 0 ? (
-                <ul>
-                  {invoice.InvoiceService.map((service) => (
-                    <li key={service.id}>
-                      {service.Service.name} -{" "}
-                      {service.Service.price.toLocaleString("vi-VN", {
-                        style: "currency",
-                        currency: "VND",
-                      })}{" "}
-                      - {service.quantity}
-                    </li>
-                  ))}
-                </ul>
-              ) : (
-                "Không có dịch vụ"
-              )}
-            </TableCell>
             <TableCell>
               {invoice.UsageHistory?.length > 0 ? (
                 <ul>
@@ -103,7 +85,25 @@ export async function ViewAllInvoices() {
                   ))}
                 </ul>
               ) : (
-                "Không có lịch sử sử dụng"
+                "Không có phiên sử dụng"
+              )}
+            </TableCell>
+            <TableCell>
+              {invoice.InvoiceService?.length > 0 ? (
+                <ul>
+                  {invoice.InvoiceService.map((service) => (
+                    <li key={service.id}>
+                      {service.Service.name} -{" "}
+                      {service.Service.price.toLocaleString("vi-VN", {
+                        style: "currency",
+                        currency: "VND",
+                      })}{" "}
+                      - {service.quantity}
+                    </li>
+                  ))}
+                </ul>
+              ) : (
+                "Không có dịch vụ"
               )}
             </TableCell>
             <TableCell className="flex items-center">

@@ -1,85 +1,68 @@
-import { Prisma, PrismaClient } from '@prisma/client';
-import fs from 'fs/promises';
-
+import { PrismaClient } from "@prisma/client";
+import fs from "fs";
+import path from "path";
 const prisma = new PrismaClient();
 
-async function main() {
-  let tablesTryAgain: any[] = [];
-  const tables = Object.keys(Prisma.ModelName);
-  let limit = 10;
-  const MAX = limit;
+async function deleteAllData(orderedFileNames: string[]) {
+  const modelNames = orderedFileNames.map((fileName) => {
+    const modelName = path.basename(fileName, path.extname(fileName));
+    return modelName.charAt(0).toUpperCase() + modelName.slice(1);
+  });
 
-  const snakeToCamel = (str: string) =>
-    str.toLocaleLowerCase().replace(/([-_][a-z0-9])/g, undeScoreAndString => {
-      return undeScoreAndString.toUpperCase().replace('-', '').replace('_', '');
-    });
-
-  const readFile = async (path: string) => {
-    try {
-      const data = await fs.readFile(`./prisma/seeds/${path}`, 'utf8');
-      const dataParse = JSON.parse(data);
-      if (Array.isArray(dataParse)) return dataParse;
-    } catch (error: any) {
-      console.log(error.message, '<---XXX');
-    }
-    return [];
-  };
-
-  const seedTable = async (table: Prisma.ModelName) => {
-    const data = await readFile(`${snakeToCamel(table)}.json`);
-
-    try {
-      tablesTryAgain = tablesTryAgain.filter(t => t !== table);
-      // ~@ts-expect-error ts(2322): Type 'string' is not assignable to type 'Prisma.ModelName'.
-      await prisma[table].createMany({ data });
-    } catch (error: any) {
-      if (!error.message.toLowerCase().includes('unique constraint')) {
-        console.log('\n XXXXXXXXX ', error.message, '\n', table, '<---Adding in try Again XXXXX');
-        tablesTryAgain.push(table);
-      }
-    }
-  };
-
-  const dropAll = async (arrTables = tables) => {
-    for (let i = 0; i < arrTables.length; i++) {
-      const table = arrTables[i];
-      try {
-        tablesTryAgain = tablesTryAgain.filter(t => t !== table);
-        // ~@ts-expect-error ts(2322): Type 'string' is not assignable to type 'Prisma.ModelName'.
-        await prisma[table].deleteMany({});
-      } catch (error: any) {
-        tablesTryAgain.push(table);
-        console.log('\n XXXXXXXXX ', '\n', table, '<--- FAIL TO DROPED XXXXX', tablesTryAgain, '\n');
-      }
-    }
-  };
-  const seedAll = async () => {
-    for (let i = 0; i < tables.length; i++) {
-      await seedTable(tables[i] as Prisma.ModelName);
-    }
-  };
-  console.clear();
-
-  const isDroped = true;
-  const action = isDroped ? dropAll : seedAll;
-
-  await action();
-
-  if (tablesTryAgain.length > 0) {
-    while (tablesTryAgain.length > 0 && limit-- > 0) {
-      await action(tablesTryAgain);
+  for (const modelName of modelNames) {
+    const model: any = prisma[modelName as keyof typeof prisma];
+    if (model) {
+      await model.deleteMany({});
+      console.log(`Cleared data from ${modelName}`);
+    } else {
+      console.error(
+        `Model ${modelName} not found. Please ensure the model name is correctly specified.`
+      );
     }
   }
+}
 
-  console.log('The end', tablesTryAgain, '<-- Tables to seed (Fails) | Number of trys: ', MAX - limit);
+async function main() {
+  const dataDirectory = path.join(__dirname, "seeds");
+
+  const orderedFileNames = [
+    "account.json",
+    "computer.json",
+    "customer.json",
+    "staff.json",
+    "service.json",
+    "invoice.json",
+    "usageHistory.json",
+    "invoiceService.json",
+  ];
+
+  await deleteAllData(orderedFileNames);
+
+  for (const fileName of orderedFileNames) {
+    const filePath = path.join(dataDirectory, fileName);
+    const jsonData = JSON.parse(fs.readFileSync(filePath, "utf-8"));
+    const modelName = path.basename(fileName, path.extname(fileName));
+    const model: any = prisma[modelName as keyof typeof prisma];
+
+    if (!model) {
+      console.error(`No Prisma model matches the file name: ${fileName}`);
+      continue;
+    }
+
+    for (const data of jsonData) {
+      await model.create({
+        data,
+      });
+    }
+
+    console.log(`Seeded ${modelName} with data from ${fileName}`);
+  }
 }
 
 main()
-  .then(async () => {
-    await prisma.$disconnect();
-  })
-  .catch(async e => {
+  .catch((e) => {
     console.error(e);
+  })
+  .finally(async () => {
     await prisma.$disconnect();
-    process.exit(1);
   });

@@ -14,7 +14,6 @@ export async function createInvoice(
 ): Promise<{ error?: string; invoice?: any }> {
   const accountName = formData.get("accountName") as string;
 
-  // Lấy tất cả các `selectedUsageIds` từ `formData`
   const selectedUsageIds: string[] = [];
   formData.forEach((value, key) => {
     if (key === "selectedUsageIds[]") {
@@ -22,9 +21,7 @@ export async function createInvoice(
     }
   });
 
-  // Lấy danh sách dịch vụ từ `formData`
   const services: { name: string; price: number; quantity: number }[] = [];
-
   formData.forEach((value, key) => {
     const match = key.match(/^services\[(\d+)\]\[(.+)\]$/);
     if (match) {
@@ -45,23 +42,22 @@ export async function createInvoice(
     return { error: "Account Name is required" };
   }
 
-  if (selectedUsageIds.length === 0) {
-    return { error: "Selected Usage IDs are invalid" };
-  }
-
-  if (services.length === 0) {
-    return { error: "Services are invalid" };
+  // Kiểm tra nếu không có cả selectedUsageIds và services
+  if (selectedUsageIds.length === 0 && services.length === 0) {
+    return { error: "Chưa chọn phiên sử dụng hoặc dịch vụ." };
   }
 
   try {
     const customer = await getCustomerByAccountName(accountName);
     if (!customer) throw new Error("Không tìm thấy khách hàng");
 
-    // Lấy thông tin UsageHistory từ selectedUsageIds
-    const usageHistories = await getUsageHistoriesByIds(selectedUsageIds);
-
-    if (!usageHistories || usageHistories.length === 0) {
-      return { error: "Usage Histories are invalid or not found" };
+    // Nếu có selectedUsageIds, lấy thông tin UsageHistory
+    let usageHistories: any[] = [];
+    if (selectedUsageIds.length > 0) {
+      usageHistories = await getUsageHistoriesByIds(selectedUsageIds);
+      if (!usageHistories || usageHistories.length === 0) {
+        return { error: "Usage Histories are invalid or not found" };
+      }
     }
 
     // Tính tổng tiền từ UsageHistory
@@ -81,38 +77,44 @@ export async function createInvoice(
 
     const invoice = await createNewInvoice(customer, totalAmount);
 
-    const existingServices = await getServicesByNames(
-      services.map((service) => service.name)
-    );
+    // Nếu có dịch vụ, thêm dịch vụ vào hóa đơn
+    if (services.length > 0) {
+      const existingServices = await getServicesByNames(
+        services.map((service) => service.name)
+      );
 
-    const servicesToAdd = services
-      .map((service) => {
-        const existingService = existingServices.find(
-          (s) => s.name === service.name
-        );
-        if (existingService) {
-          return {
-            id: cuid(),
-            invoiceId: invoice.id,
-            serviceId: existingService.id,
-            quantity: service.quantity,
-            totalPrice: service.price * service.quantity,
-          };
-        }
-        return null;
-      })
-      .filter(Boolean);
+      const servicesToAdd = services
+        .map((service) => {
+          const existingService = existingServices.find(
+            (s) => s.name === service.name
+          );
+          if (existingService) {
+            return {
+              id: cuid(),
+              invoiceId: invoice.id,
+              serviceId: existingService.id,
+              quantity: service.quantity,
+              totalPrice: service.price * service.quantity,
+            };
+          }
+          return null;
+        })
+        .filter(Boolean);
 
-    if (servicesToAdd.length > 0) {
-      await createInvoiceServices(invoice.id, servicesToAdd as any[]);
+      if (servicesToAdd.length > 0) {
+        await createInvoiceServices(invoice.id, servicesToAdd as any[]);
+      }
     }
 
+    // Nếu có selectedUsageIds, liên kết UsageHistory vào hóa đơn
     if (selectedUsageIds.length > 0) {
       await linkUsageHistoryToInvoice(selectedUsageIds, invoice.id);
     }
+
     return { invoice };
   } catch (error) {
     console.error("Error creating invoice:", error);
     return { error: "Unable to create invoice" };
   }
 }
+

@@ -53,7 +53,7 @@ model Invoice {
   status         String           @default("Unpaid")
   createdAt      DateTime         @default(now())
   updatedAt      DateTime
-  Customer       Customer         @relation(fields: [customerId], references: [id])
+  Customer       Customer         @relation(fields: [customerId], references: [id], onDelete: Cascade)
   InvoiceService InvoiceService[]
   UsageHistory   UsageHistory[]
 }
@@ -67,7 +67,7 @@ model InvoiceService {
   createdAt  DateTime @default(now())
   updatedAt  DateTime
   Invoice    Invoice  @relation(fields: [invoiceId], references: [id], onDelete: Cascade)
-  Service    Service  @relation(fields: [serviceId], references: [id])
+  Service    Service  @relation(fields: [serviceId], references: [id], onDelete: Cascade)
 }
 
 model Service {
@@ -88,7 +88,7 @@ model Staff {
   role        String
   createdAt   DateTime @default(now())
   updatedAt   DateTime
-  Account     Account  @relation(fields: [accountId], references: [id])
+  Account     Account  @relation(fields: [accountId], references: [id], onDelete: Cascade)
 }
 
 model UsageHistory {
@@ -102,7 +102,7 @@ model UsageHistory {
   invoiceId  String?
   createdAt  DateTime  @default(now())
   updatedAt  DateTime
-  Computer   Computer  @relation(fields: [computerId], references: [id])
-  Customer   Customer  @relation(fields: [customerId], references: [id])
-  Invoice    Invoice?  @relation(fields: [invoiceId], references: [id])
+  Computer   Computer  @relation(fields: [computerId], references: [id], onDelete: Cascade)
+  Customer   Customer  @relation(fields: [customerId], references: [id], onDelete: Cascade)
+  Invoice    Invoice?  @relation(fields: [invoiceId], references: [id], onDelete: SetNull)
 }
