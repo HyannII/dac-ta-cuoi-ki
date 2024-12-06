@@ -7,7 +7,7 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import prisma from "@/lib/db";
-import { DeleteButton } from "./components";
+import { DeleteButton, EditButton } from "./components";
 import { Separator } from "@/components/ui/separator";
 
 export async function ViewAllInvoices() {
@@ -74,8 +74,8 @@ export async function ViewAllInvoices() {
                       {service.Service.price.toLocaleString("vi-VN", {
                         style: "currency",
                         currency: "VND",
-                    })} -{" "}
-                      {service.quantity}
+                      })}{" "}
+                      - {service.quantity}
                     </li>
                   ))}
                 </ul>
@@ -107,11 +107,15 @@ export async function ViewAllInvoices() {
               )}
             </TableCell>
             <TableCell className="flex items-center">
-              {/* <EditButton id={invoice.id} /> */}
-              <Separator
-                orientation="vertical"
-                className="mx-2 h-6"
-              />
+              {invoice.status !== "Đã thanh toán" && (
+                <>
+                  <EditButton id={invoice.id} />
+                  <Separator
+                    orientation="vertical"
+                    className="mx-2 h-6"
+                  />
+                </>
+              )}
               <DeleteButton id={invoice.id} />
             </TableCell>
           </TableRow>

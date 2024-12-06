@@ -6,6 +6,7 @@ import {
   editInvoice,
   getAllServices,
   getCustomerByAccountName,
+  getInvoiceById,
   getUsageHistoriesByCustomerId,
 } from "@/actions/invoice-actions";
 import { Button } from "@/components/ui/button";
@@ -179,9 +180,11 @@ export function CreateButton(): JSX.Element {
   return (
     <Dialog>
       <DialogTrigger asChild>
-        <Button variant="outline">Tạo Hóa Đơn</Button>
+        <Button variant="outline">
+          <Plus className="h-4 w-4" />
+          Tạo Hóa Đơn
+        </Button>
       </DialogTrigger>
-
       <DialogContent>
         <DialogHeader>
           <DialogTitle>Tạo Hóa Đơn</DialogTitle>
@@ -284,177 +287,123 @@ export function CreateButton(): JSX.Element {
   );
 }
 
-// export function EditButton({ id }: { id: string }): JSX.Element {
-//   const [invoice, setInvoice] = useState<{
-//     invoiceDate: Date;
-//     totalAmount: number;
-//     status: string;
-//   } | null>(null);
+export function EditButton({ id }: { id: string }): JSX.Element {
+  const [invoice, setInvoice] = useState<{
+    invoiceDate: Date;
+    totalAmount: number;
+    status: string;
+    usageHistories: {
+      id: string;
+      computerId: string;
+      startTime: Date;
+      endTime: Date | null;
+      totalHours: number | null;
+      totalCost: number | null;
+    }[];
+    services: {
+      id: string;
+      name: string;
+      price: number;
+      quantity: number;
+    }[];
+    customer?: { citizenId: string };
+  } | null>(null);
 
-//   const [customerName, setCustomerName] = useState<string>("");
-//   const [customers, setCustomers] = useState<
-//     { id: string; fullName: string; citizenId: string }[]
-//   >([]);
-//   const [selectedCustomer, setSelectedCustomer] = useState<string | null>(null);
+  useEffect(() => {
+    getInvoiceById(id).then(setInvoice).catch(console.error);
+  }, [id]);
 
-//   const [usageHistories, setUsageHistories] = useState<
-//     { id: string; computerId: string; startTime: Date; endTime: Date | null }[]
-//   >([]);
-//   const [selectedHistories, setSelectedHistories] = useState<string[]>([]);
+  const [isPaid, setIsPaid] = useState(false);
 
-//   useEffect(() => {
-//     getInvoiceById(id)
-//       .then((data) => {
-//         setInvoice(data);
-//         setSelectedHistories(data?.usageHistories.map((h) => h.id) || []);
-//       })
-//       .catch(console.error);
-//   }, [id]);
+  useEffect(() => {
+    if (invoice) {
+      setIsPaid(invoice.status === "Đã thanh toán");
+    }
+  }, [invoice]);
 
-//   useEffect(() => {
-//     if (selectedCustomer) {
-//       getUsageHistoriesByCustomerId(selectedCustomer)
-//         .then(setUsageHistories)
-//         .catch(console.error);
-//     }
-//   }, [selectedCustomer]);
+  return (
+    <Dialog>
+      <DialogTrigger asChild>
+        <Button variant="outline">
+          <Pencil className="h-4 w-4" />
+        </Button>
+      </DialogTrigger>
+      <DialogContent>
+        <DialogHeader>
+          <DialogTitle>Sửa thông tin hóa đơn</DialogTitle>
+        </DialogHeader>
+        <form
+          onSubmit={async (e) => {
+            e.preventDefault();
+            const formData = new FormData(e.currentTarget);
 
-//   const handleSearchCustomer = async () => {
-//     const customers = await getCustomersByName(customerName);
-//     setCustomers(customers);
-//     setSelectedCustomer(null); // Reset selected customer
-//   };
+            if (!invoice) return;
+            formData.set(
+              "status",
+              isPaid ? "Đã thanh toán" : "Chưa thanh toán"
+            );
+            await editInvoice(formData, id);
+          }}
+        >
+          <Label>Ngày lập hóa đơn</Label>
+          <Input
+            type="text"
+            value={invoice?.invoiceDate.toLocaleDateString("vi-VN") || ""}
+            readOnly
+          />
 
-//   const handleAddUsageHistory = (historyId: string) => {
-//     if (!selectedHistories.includes(historyId)) {
-//       setSelectedHistories([...selectedHistories, historyId]);
-//     }
-//   };
+          <Label>Tổng tiền</Label>
+          <Input
+            type="number"
+            value={invoice?.totalAmount || ""}
+            readOnly
+          />
 
-//   const handleRemoveUsageHistory = (historyId: string) => {
-//     setSelectedHistories(selectedHistories.filter((id) => id !== historyId));
-//   };
+          <Label>Trạng thái</Label>
+          <div className="flex items-center space-x-2">
+            <Checkbox
+              id="status"
+              checked={isPaid}
+              onCheckedChange={(checked) => setIsPaid(!!checked)}
+              disabled={invoice?.status === "Đã thanh toán"} // Không thể sửa nếu đã thanh toán
+            />
+            <Label htmlFor="status">
+              {isPaid ? "Đã thanh toán" : "Chưa thanh toán"}
+            </Label>
+          </div>
 
-//   return (
-//     <Dialog>
-//       <DialogTrigger asChild>
-//         <Button variant="outline">
-//           <Pencil className="h-4 w-4" />
-//         </Button>
-//       </DialogTrigger>
-//       <DialogContent>
-//         <DialogHeader>
-//           <DialogTitle>Sửa thông tin hoá đơn</DialogTitle>
-//         </DialogHeader>
-//         <form
-//           action={async (formData: FormData) => {
-//             formData.append(
-//               "usageHistories",
-//               JSON.stringify(selectedHistories)
-//             );
-//             formData.append("customerCitizenId", selectedCustomer || "");
-//             console.log("Submitting formData:", Array.from(formData.entries()));
-//             await editInvoice(formData, id);
-//           }}
-//         >
-//           <Label>Tìm kiếm khách hàng theo tên</Label>
-//           <div style={{ display: "flex", gap: "8px" }}>
-//             <Input
-//               type="text"
-//               placeholder="Nhập tên khách hàng"
-//               value={customerName}
-//               onChange={(e) => setCustomerName(e.target.value)}
-//             />
-//             <Button
-//               type="button"
-//               onClick={handleSearchCustomer}
-//             >
-//               Tìm
-//             </Button>
-//           </div>
+          <Label>Lịch sử sử dụng</Label>
+          <ul>
+            {invoice?.usageHistories.map((history) => (
+              <li key={history.id}>
+                Máy tính: {history.computerId}, Bắt đầu:{" "}
+                {history.startTime.toLocaleString("vi-VN")}, Kết thúc:{" "}
+                {history.endTime
+                  ? history.endTime.toLocaleString("vi-VN")
+                  : "Chưa kết thúc"}
+                , Tổng giờ: {history.totalHours}, Tổng tiền:{" "}
+                {history.totalCost?.toLocaleString("vi-VN")} VNĐ
+              </li>
+            ))}
+          </ul>
 
-//           {customers.length > 0 && (
-//             <>
-//               <Label>Chọn khách hàng</Label>
-//               <select
-//                 onChange={(e) => setSelectedCustomer(e.target.value)}
-//                 defaultValue=""
-//               >
-//                 <option
-//                   value=""
-//                   disabled
-//                 >
-//                   -- Chọn khách hàng --
-//                 </option>
-//                 {customers.map((customer) => (
-//                   <option
-//                     key={customer.id}
-//                     value={customer.id}
-//                   >
-//                     {customer.fullName} - {customer.citizenId}
-//                   </option>
-//                 ))}
-//               </select>
-//             </>
-//           )}
+          <Label>Dịch vụ đã sử dụng</Label>
+          <ul>
+            {invoice?.services.map((service) => (
+              <li key={service.id}>
+                {service.name}: {service.quantity} x{" "}
+                {service.price.toLocaleString("vi-VN")} VNĐ ={" "}
+                {(service.quantity * service.price).toLocaleString("vi-VN")} VNĐ
+              </li>
+            ))}
+          </ul>
 
-//           <Label>Trạng thái</Label>
-//           <Input
-//             type="text"
-//             name="status"
-//             defaultValue={invoice?.status}
-//             required
-//           />
-//           <Label>Thành tiền</Label>
-//           <Input
-//             type="number"
-//             name="totalAmount"
-//             defaultValue={invoice?.totalAmount}
-//             required
-//           />
-
-//           <Label>Lịch sử sử dụng đã chọn</Label>
-//           <ul>
-//             {selectedHistories.map((historyId) => {
-//               const history = usageHistories.find((h) => h.id === historyId);
-//               return (
-//                 <li key={historyId}>
-//                   {history?.computerId} (
-//                   {history?.startTime.toLocaleDateString("vi-VN")}){" "}
-//                   <Button
-//                     type="button"
-//                     variant="destructive"
-//                     onClick={() => handleRemoveUsageHistory(historyId)}
-//                   >
-//                     Hủy
-//                   </Button>
-//                 </li>
-//               );
-//             })}
-//           </ul>
-
-//           <Label>Thêm lịch sử sử dụng</Label>
-//           <select onChange={(e) => handleAddUsageHistory(e.target.value)}>
-//             <option value="">Chọn lịch sử sử dụng</option>
-//             {usageHistories
-//               .filter((h) => !selectedHistories.includes(h.id))
-//               .map((history) => (
-//                 <option
-//                   key={history.id}
-//                   value={history.id}
-//                 >
-//                   {history.computerId} (
-//                   {history.startTime.toLocaleDateString("vi-VN")})
-//                 </option>
-//               ))}
-//           </select>
-
-//           <Button type="submit">Sửa</Button>
-//         </form>
-//       </DialogContent>
-//     </Dialog>
-//   );
-// }
+          <Button type="submit">Lưu</Button>
+        </form>
+      </DialogContent>
+    </Dialog>
+  );
+}
 
 export function DeleteButton({ id }: { id: string }): JSX.Element {
   return (

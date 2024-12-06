@@ -25,6 +25,18 @@ export async function getInvoiceById(id: string) {
             totalCost: true,
           },
         },
+        InvoiceService: {
+          select: {
+            Service: {
+              select: {
+                id: true,
+                name: true,
+                price: true,
+              },
+            },
+            quantity: true,
+          },
+        },
       },
     });
 
@@ -44,12 +56,19 @@ export async function getInvoiceById(id: string) {
         totalHours: history.totalHours,
         totalCost: history.totalCost,
       })),
+      services: invoice.InvoiceService.map((service) => ({
+        id: service.Service.id,
+        name: service.Service.name,
+        price: service.Service.price,
+        quantity: service.quantity,
+      })),
     };
   } catch (error) {
     console.error("Error fetching invoice:", error);
     throw new Error("Unable to fetch invoice data");
   }
 }
+
 
 export async function getCustomerByAccountName(
   username: string
@@ -188,74 +207,44 @@ export async function createInvoiceServices(
 
 
 export async function editInvoice(formData: FormData, id: string) {
-  const customerCitizenId = formData.get("customerCitizenId") as string;
-  const usageHistoriesRaw = formData.get("usageHistories") as string;
-  const totalAmount = Number(formData.get("totalAmount"));
   const status = formData.get("status") as string;
 
-  if (!customerCitizenId || !usageHistoriesRaw) {
-    throw new Error(
-      "Missing customerCitizenId or usageHistories in form data."
-    );
+  if (!status) {
+    throw new Error("Missing status in form data.");
   }
 
-  const selectedUsageHistories = JSON.parse(
-    usageHistoriesRaw as string
-  ) as string[];
-
   try {
-    // Tìm ID của khách hàng dựa trên citizenId
-    const customer = await prisma.customer.findUnique({
-      where: { citizenId: customerCitizenId as string },
-      select: { id: true },
+    // Chỉ cho phép cập nhật nếu hóa đơn chưa thanh toán
+    const existingInvoice = await prisma.invoice.findUnique({
+      where: { id },
+      select: { status: true },
     });
 
-    if (!customer) {
-      throw new Error(`Customer with citizenId ${customerCitizenId} not found`);
+    if (!existingInvoice) {
+      throw new Error("Invoice not found.");
     }
 
-    // Cập nhật hóa đơn
+    if (existingInvoice.status === "Đã thanh toán") {
+      throw new Error("Cannot edit a paid invoice.");
+    }
+
+    // Cập nhật trạng thái hóa đơn
     await prisma.invoice.update({
       where: { id },
       data: {
-        customerId: customer.id,
-        totalAmount,
         status,
         updatedAt: new Date(),
       },
     });
 
-    // Xóa liên kết UsageHistories cũ
-    await prisma.usageHistory.updateMany({
-      where: { invoiceId: id },
-      data: { invoiceId: null },
-    });
-
-    // Liên kết UsageHistories mới nếu có
-    if (selectedUsageHistories.length > 0) {
-      for (const usageHistoryId of selectedUsageHistories) {
-        const usageHistory = await prisma.usageHistory.findUnique({
-          where: { id: usageHistoryId },
-        });
-
-        if (!usageHistory) {
-          throw new Error(`UsageHistory with id ${usageHistoryId} not found`);
-        }
-
-        await prisma.usageHistory.update({
-          where: { id: usageHistoryId },
-          data: { invoiceId: id },
-        });
-      }
-    }
-
-    // Làm mới giao diện
     revalidatePath("/invoices");
   } catch (error) {
     console.error("Error updating invoice:", error);
-    throw new Error("Unable to update invoice");
+    throw new Error("Unable to update invoice status.");
   }
 }
+
+
 
 export async function deleteInvoice(id: string) {
   try {
